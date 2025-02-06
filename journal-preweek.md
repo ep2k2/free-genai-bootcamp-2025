@@ -3,7 +3,7 @@
 # Language learning thoughts/notes - 'vocab' drills
 
 ## Underpinning recall for e.g. vocab and in-context (sentence) learning = scheduling reviews optimally
-- overview of the concepts of SRS - https://juliensobczak.com/inspect/2022/05/30/anki-srs/
+- overview of the concepts of SRS - https://juliensobczak.com/inspect/2022/05/30/anki-srs/ - with 
 - history: early concepts of the 'forgetting curve' Hermann Ebbinghaus (1885) through 'spacing' Skinner to boost recall in the 50s with Sebastian Leitner (1972) implementing initially as card index by manually moving physical cards between review frequency buckets!
 - discussion of algorithms, what is used in various systems and services, further links/history plus code snippets
 - :thought_balloon: retention/review generally fixed - could ML enable tuning at learner level _e.g._ periods of review changes by user; period of review schedulings changes by performance on that specific item; review frequency changes by 'class' or 'type' item being learnt
