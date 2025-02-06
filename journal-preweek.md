@@ -18,7 +18,13 @@
 - as well as the 'big player' multi-language offerings there are some specific to Japanese which have grown up more organically from the ground-up e.g. mnemonic-based kanji and vocab in https://www.wanikani.com/
 
 
-# Other - local hardware notes
+# Real learning supported by LLMs or on-demand subsitution for understanding
+- gulf between asking an LLM to summarise a topic/write some code and an understanding of a topic or getting to 'good' 
+- some of the chatter on our Discord and my own reading this week -> if you understand something already then GenAI can act as a force multiplier, and where you don't can enable progress and basic progress in a fake it till you make it mode which isn't a bad thing but isn't a panacea. 
+- prevalent in many blog posts I've been reading this week especially on LinkedIn = pick a hot topic and press create... doesn't give an interesting/balanced/informed take on things :( 
+
+
+# The woes of purchasing local hardware - notes
 
 ## hardware to inference 'good' models (parameter size/quantization) at 'reasonable' performance still hard to source especially for homelab-type used
 - smaller models can be run, but larger more challenging and tuning etc. remains out of reach (understandably)
