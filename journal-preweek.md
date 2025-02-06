@@ -12,7 +12,7 @@
 - Anki https://apps.ankiweb.net/ - spaced repetition system (SRS) - multiplatform with web-based sync service
 - https://github.com/yomidevs/yomitan (including capture from web, audio TTS, kanji stroke order - all from linked services/data sources)
 - _c.f._ &#24460; sentence parsing/decomposition e.g. https://taku910.github.io/mecab/#diff
-- :thought_balloon: canhow might we enrich GenAI usefullness by augmenting with these services and underlying data sources, either in RAG or in training
+- :thought_balloon: can we/how might we enrich GenAI usefullness by augmenting with these services and underlying data sources, either in RAG or in training
 
 ## Commercial
 - as well as the 'big player' multi-language offerings there are some specific to Japanese which have grown up more organically from the ground-up e.g. mnemonic-based kanji and vocab in https://www.wanikani.com/
