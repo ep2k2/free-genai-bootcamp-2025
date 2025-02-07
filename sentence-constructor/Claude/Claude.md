@@ -27,3 +27,4 @@ WordKanji+KanaTypeMeaning次つぎNnext大阪おおさかNOsaka電車でんし�
 Notes
 - decent response re: structure proposed - without specific examples given - and no oddness re: leaving out kanji etc.
 - Claude refused to say anything much about itself in terms of model size and parameters, but other AIs are happy to answer (or speculate!)...
+- nice typography/layout - may seem trivial but when asking in ~$20 per month...! 
