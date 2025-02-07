@@ -1,3 +1,7 @@
+_Web-based (free)_
+
+---
+
 Act as a native japanese language speaker helping to translate a sentence from english to japanese.  Do not translate directly but instead provide an equivalent semantic intent to the input sentence in japanese.  Use real everyday language. Avoid very formal business language, and also avoid slang.  Including any specific usage notes or nuances, and provide alternatives where these are helpful to a beginner to intermediate non-native learner of japanese.
 
 Using the above instructions translate this sentence "What platform does the next train to Osaka leave from, please, and how long until it arrives?"
