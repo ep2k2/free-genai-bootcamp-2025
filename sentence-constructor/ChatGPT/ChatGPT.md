@@ -83,5 +83,5 @@ Notes
 - Unbelievably slow on first-time use - 3-5 seconds per word - yes, not 3-5 words per second - timed out on network error - snappier on later runs
 - assume that latency and more importantly variability less of an issue on paid provision but another tick in the local approach as consistency often very important as well as raw speed! 
 - strong response above with these two sections potentially forming the basis of the ask
--- vocab table good w/ combined kanji/kana (romaji) column
+-- vocab table good w/ combined kanji/kana (romaji) column, although not dictionary form - iki not iku
 -- indicative sentence structure as requested
