@@ -11,3 +11,6 @@
  R efine: Continuously improve and refine the change process based on feedback and evaluation.
 
 There is a Coursera course here https://www.coursera.org/learn/change-management-generative-ai#modules presented by Dr. Jules White, Bob Higgins... might be something of interest later, especially if you are in or want to be in a position to introduce GenAI into an organisation❔)
+
+-- added 08/02/25 - additionally I have found another FASTER framework in the control and governance space: this one from and for Canadian government - different purpose and this time Fair, Accountable, Secure, Transparent, Educated, Relevant (popular acronym❣️)
+https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/guide-use-generative-ai.html
