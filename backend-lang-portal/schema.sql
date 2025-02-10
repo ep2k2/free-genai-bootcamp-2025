@@ -2,33 +2,43 @@
 
 -- Groups table
 CREATE TABLE groups (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name STRING,
-    words_count INT
+    words_count INT DEFAULT 0
 );
 
 -- Study Activities table
 CREATE TABLE study_activities (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name STRING,
     url STRING
 );
 
+-- Parts of Speech table
+CREATE TABLE parts_of_speech (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type STRING NOT NULL
+);
+
 -- Words table
 CREATE TABLE words (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     kanji STRING,
     romaji STRING,
     english STRING,
-    parts JSON
+    parts JSON,
+    part_of_speech_id INT,
+    subpart_of_speech_id INT,
+    FOREIGN KEY (part_of_speech_id) REFERENCES parts_of_speech(id),
+    FOREIGN KEY (subpart_of_speech_id) REFERENCES subparts_of_speech(id)
 );
 
 -- Study Sessions table
 CREATE TABLE study_sessions (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     group_id INT,
     study_activity_id INT,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (group_id) REFERENCES groups(id),
     FOREIGN KEY (study_activity_id) REFERENCES study_activities(id)
 );
@@ -44,11 +54,11 @@ CREATE TABLE word_groups (
 
 -- Word Review Items table
 CREATE TABLE word_review_items (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     word_id INT,
     study_session_id INT,
     correct BOOLEAN,
-    created_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (word_id) REFERENCES words(id),
     FOREIGN KEY (study_session_id) REFERENCES study_sessions(id)
 );
