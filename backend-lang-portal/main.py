@@ -1,6 +1,6 @@
 import sqlite3
 from fastapi import FastAPI, Query
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # FastAPI app
 app = FastAPI()
