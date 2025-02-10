@@ -1,3 +1,5 @@
+-- Created by Claude 3.5 from png image via Windsurf
+
 -- Groups table
 CREATE TABLE groups (
     id INT PRIMARY KEY,
