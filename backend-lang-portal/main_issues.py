@@ -1,25 +1,3 @@
-import sqlite3
-from contextlib import contextmanager
-from fastapi import FastAPI, Query
-from typing import List, Dict, Any, Optional, Generator
-
-app = FastAPI()
-
-@contextmanager
-def db_connection() -> Generator[sqlite3.Connection, None, None]:
-    """Context manager for database connections."""
-    conn = sqlite3.connect('lrs.db', check_same_thread=False)
-    try:
-        yield conn
-    finally:
-        conn.close()
-
-def fetch_parts_of_speech_id(word_type: str) -> Optional[int]:
-    """Fetch parts_of_speech_id based on word_type."""
-    with db_connection() as conn:
-        result = conn.execute("SELECT id FROM parts_of_speech WHERE type = ?", (word_type,)).fetchone()
-        return result[0] if result else None
-
 def fetch_words(
     page: int = 1,
     sort_by: str = 'kanji',
@@ -81,36 +59,3 @@ def fetch_words(
         # Convert the results to a list of dictionaries and return
 
         return [dict(word) for word in words]
-
-def check_database_connection(db_file):
-    try:
-        # Attempt to connect to the SQLite database
-        connection = sqlite3.connect(db_file)
-        print("Database connection successful.")
-        connection.close()
-    except sqlite3.Error as e:
-        print(f"Database connection failed: {e}")
-
-# Call the function with the path to your SQLite database file
-check_database_connection('lrs.db')
-
-@app.get("/words", response_model=List[Dict[str, Any]])
-async def get_words(
-    page: int = Query(1, ge=1),
-    sort_by: str = Query('kanji', enum=['kanji', 'romaji', 'english', 'correct_count', 'wrong_count']),
-    order: str = Query('asc', enum=['asc', 'desc']),
-    word_type: Optional[str] = Query(None)
-) -> List[Dict[str, Any]]:
-    """
-    Retrieve words with pagination, sorting, and optional word type filtering.
-
-    Args:
-        page: Page number (default: 1)
-        sort_by: Sort field (default: 'kanji')
-        order: Sort order (default: 'asc')
-        word_type: Filter by word type (optional)
-    """
-    
-    return fetch_words(page, sort_by, order, word_type)
-
-# Run the app with: uvicorn main:app --reload

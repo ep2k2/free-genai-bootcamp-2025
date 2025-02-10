@@ -57,6 +57,6 @@ CREATE TABLE IF NOT EXISTS "words" (
     romaji STRING,
     english STRING,
     parts JSON,
-    part_of_speech_id INT,
-    FOREIGN KEY (part_of_speech_id) REFERENCES parts_of_speech(id),
+type INT,
+FOREIGN KEY (type) REFERENCES parts_of_speech(id)
 );
