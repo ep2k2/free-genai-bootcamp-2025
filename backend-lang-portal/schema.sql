@@ -1,4 +1,4 @@
--- Created by Claude 3.5 from png image via Windsurf
+-- Created by Claude 3.5 from png image via Windsurf -- edited to include parts_of_speech
 
 -- Groups table
 CREATE TABLE groups (
@@ -14,25 +14,6 @@ CREATE TABLE study_activities (
     url STRING
 );
 
--- Parts of Speech table
-CREATE TABLE parts_of_speech (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type STRING NOT NULL
-);
-
--- Words table
-CREATE TABLE words (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    kanji STRING,
-    romaji STRING,
-    english STRING,
-    parts JSON,
-    part_of_speech_id INT,
-    subpart_of_speech_id INT,
-    FOREIGN KEY (part_of_speech_id) REFERENCES parts_of_speech(id),
-    FOREIGN KEY (subpart_of_speech_id) REFERENCES subparts_of_speech(id)
-);
-
 -- Study Sessions table
 CREATE TABLE study_sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +24,7 @@ CREATE TABLE study_sessions (
     FOREIGN KEY (study_activity_id) REFERENCES study_activities(id)
 );
 
--- Word Groups junction table
+-- Word Groups table
 CREATE TABLE word_groups (
     word_id INT,
     group_id INT,
@@ -61,4 +42,21 @@ CREATE TABLE word_review_items (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (word_id) REFERENCES words(id),
     FOREIGN KEY (study_session_id) REFERENCES study_sessions(id)
+);
+
+-- Parts of Speech table
+CREATE TABLE parts_of_speech (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type STRING NOT NULL
+);
+
+-- Words table
+CREATE TABLE IF NOT EXISTS "words" (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kanji STRING,
+    romaji STRING,
+    english STRING,
+    parts JSON,
+    part_of_speech_id INT,
+    FOREIGN KEY (part_of_speech_id) REFERENCES parts_of_speech(id),
 );
