@@ -1,15 +1,13 @@
 import sqlite3
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from typing import List, Dict, Any, Optional
-
-# TODO - API users should not use 1 for adjectives, 2 for verbs etc. - not very RESTful
 
 # FastAPI app
 app = FastAPI()
 
 # Database connection
 def get_db_connection():
-    conn = sqlite3.connect('lrs.db')
+    conn = sqlite3.connect('LRS.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -44,5 +42,50 @@ async def get_words(
     
     conn.close()
     return [dict(word) for word in words]
+
+@app.post("/groups")
+def create_group(name: str):
+    """
+    Create a new word group.
+
+    - **name**: Name of the group (required)
+    
+    Returns the created group's ID and name.
+    """
+    # Input validation
+    if not name or not isinstance(name, str):
+        raise HTTPException(status_code=400, detail="Group name is required and must be a string")
+    
+    # Database connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Check if group with this name already exists
+        existing_group = cursor.execute("SELECT id FROM groups WHERE name = ?", (name,)).fetchone()
+        if existing_group:
+            raise HTTPException(status_code=400, detail=f"Group with name '{name}' already exists")
+        
+        # Insert new group
+        cursor.execute("INSERT INTO groups (name, words_count) VALUES (?, 0)", (name,))
+        conn.commit()
+        
+        # Get the ID of the newly created group
+        group_id = cursor.lastrowid
+        
+        return {
+            "id": group_id, 
+            "name": name, 
+            "words_count": 0
+        }
+    
+    except sqlite3.Error as e:
+        # Rollback in case of database error
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+    finally:
+        # Always close the connection
+        conn.close()
 
 # Run the app with: uvicorn main:app --reload
