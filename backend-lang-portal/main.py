@@ -88,4 +88,58 @@ def create_group(name: str):
         # Always close the connection
         conn.close()
 
+@app.post("/study_sessions")
+def create_study_session(group_id: int, study_activity_id: int):
+    """
+    Create a new study session for a group.
+
+    - **group_id**: ID of the group to study (required)
+    - **study_activity_id**: ID of the study activity (required)
+    
+    Returns the created study session's ID, group_id, and study_activity_id.
+    """
+    # Input validation
+    if not group_id or not study_activity_id:
+        raise HTTPException(status_code=400, detail="Both group_id and study_activity_id are required")
+    
+    # Database connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Check if group exists
+        group = cursor.execute("SELECT id FROM groups WHERE id = ?", (group_id,)).fetchone()
+        if not group:
+            raise HTTPException(status_code=404, detail=f"Group with id {group_id} not found")
+        
+        # Check if study activity exists
+        activity = cursor.execute("SELECT id FROM study_activities WHERE id = ?", (study_activity_id,)).fetchone()
+        if not activity:
+            raise HTTPException(status_code=404, detail=f"Study activity with id {study_activity_id} not found")
+        
+        # Insert new study session
+        cursor.execute(
+            "INSERT INTO study_sessions (group_id, study_activity_id) VALUES (?, ?)", 
+            (group_id, study_activity_id)
+        )
+        conn.commit()
+        
+        # Get the ID of the newly created study session
+        study_session_id = cursor.lastrowid
+        
+        return {
+            "id": study_session_id, 
+            "group_id": group_id, 
+            "study_activity_id": study_activity_id
+        }
+    
+    except sqlite3.Error as e:
+        # Rollback in case of database error
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+    finally:
+        # Always close the connection
+        conn.close()
+
 # Run the app with: uvicorn main:app --reload

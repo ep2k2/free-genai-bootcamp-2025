@@ -61,24 +61,65 @@ word_review_items — Tracks individual word reviews within study sessions.
 
 # API definition
 
+## words
+
 GET /words - Get paginated list of words with review statistics
-page: Page number (default: 1)
-sort_by: Sort field ('kanji', 'romaji', 'english', 'id') (default: 'kanji')
-order: Sort order ('asc' or 'desc') (default: 'asc')
-type: int (default: None - behaviour is all types returned)
+- **page**: Page number (default: 1, integer)
+- **sort_by**: Sort field (default: 'kanji', options: 'kanji', 'romaji', 'english', 'id')
+- **order**: Sort order (default: 'asc', options: 'asc', 'desc')
+- **part_of_speech_id**: Filter by part of speech (default: None, integer)
+
+Returns:
+- List of words with their details
+- Each word includes: id, kanji, romaji, english, parts
+
+Possible Errors:
+- 400 Bad Request: Invalid query parameters
+- 500 Internal Server Error: Database-related issues
+
+
+## groups
 
 POST /groups - Create a new word group
-name - name of the group (required)
+- **name**: Name of the group (required, string)
+
+Returns:
+- **id**: Unique identifier of the created group
+- **name**: Name of the group
+- **words_count**: Initial count of words in the group (default: 0)
+
+Possible Errors:
+- 400 Bad Request: 
+  - Missing or invalid group name
+  - Group name already exists
+- 500 Internal Server Error: Database-related issues
+
 
 GET /groups - return name and count of words in the specified group
 id: ID of the group (required)
+
 
 GET /groups/:id - Get words from a specific group (This is intended to be used by target apps)
 page: Page number (default: 1)
 sort_by: Sort field ('name', 'words_count') (default: 'name')
 order: Sort order ('asc' or 'desc') (default: 'asc')
 
-POST /study_sessions - Create a new study session for a group
+## study sessions
+
+POST /study_sessions - Create a new study session
+- **group_id**: ID of the group to study (required, integer)
+- **study_activity_id**: ID of the study activity (required, integer)
+
+Returns:
+- **id**: Unique identifier of the created study session
+- **group_id**: ID of the group studied
+- **study_activity_id**: ID of the study activity used
+
+Possible Errors:
+- 400 Bad Request: Missing required parameters
+- 404 Not Found: Group or study activity does not exist
+- 500 Internal Server Error: Database-related issues
+
 
 POST /study_sessions/:id/review - Log a review attempt for a word during a study session
 group_id: ID of the group to study (required)
