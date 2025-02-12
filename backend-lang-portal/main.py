@@ -1,5 +1,5 @@
 import sqlite3
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Body
 from typing import List, Dict, Any, Optional
 
 # FastAPI app
@@ -7,7 +7,7 @@ app = FastAPI()
 
 # Database connection
 def get_db_connection():
-    conn = sqlite3.connect('LRS.db')
+    conn = sqlite3.connect('/mnt/c/free-genai-bootcamp-2025/backend-lang-portal/LRS.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -178,6 +178,51 @@ def create_study_session(group_id: int, study_activity_id: int):
     
     finally:
         # Always close the connection
+        conn.close()
+
+@app.post("/study_sessions/{id}/review")
+async def log_review_attempt(
+    id: int,
+    group_id: int = Query(...),
+    study_activity_id: int = Query(...),
+    correct: bool = Query(...),
+    word_id: int = Query(...)
+):
+    """
+    Log a review attempt for a word during a study session.
+
+    - **id**: ID of the study session (required)
+    - **group_id**: ID of the group to study (required)
+    - **study_activity_id**: ID of the study activity (required)
+    - **correct**: Whether the answer was correct (required)
+    - **word_id**: ID of the word reviewed (required)
+    """
+    # Input validation
+    if not group_id or not study_activity_id or not word_id:
+        raise HTTPException(status_code=400, detail="Both group_id, study_activity_id and word_id are required")
+
+    # Database connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check if study session exists
+        session = cursor.execute("SELECT id FROM study_sessions WHERE id = ?", (id,)).fetchone()
+        if not session:
+            raise HTTPException(status_code=404, detail=f"Study session with id {id} not found")
+
+        # Insert review attempt
+        cursor.execute("INSERT INTO word_review_items (word_id, study_session_id, correct) VALUES (?, ?, ?)", (word_id, id, correct))
+        conn.commit()
+
+        return {
+            "id": cursor.lastrowid,
+            "word_id": word_id,
+            "correct": correct
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
         conn.close()
 
 # Run the app with: uvicorn main:app --reload
