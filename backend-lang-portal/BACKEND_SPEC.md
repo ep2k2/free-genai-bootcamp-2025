@@ -165,3 +165,4 @@ Possible Errors:
 - Backend is not validating inputs and trusting frontend
 - No authentication or authorization
 - Not good RESTful APIs (e.g. POST params in headers)
+- No tests implemented :( #TODO
