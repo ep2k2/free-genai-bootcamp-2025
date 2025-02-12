@@ -95,27 +95,36 @@ Possible Errors:
 - 500 Internal Server Error: Database-related issues
 
 
-GET /groups - return name and count of words in the specified group
-- **id**: ID of the group (required, integer)
-
-Returns:
-- **id**: Unique identifier of the group
-- **name**: Name of the group
-- **words_count**: Number of words in the group
+### GET /groups/{id}
+- Retrieve details of a group by ID.
+- Returns:
+    - **id**: ID of the group
+    - **name**: Name of the group
+    - **words_count**: Number of words in the group
+    - **words**: List of word IDs in the group
 
 Possible Errors:
 - 404 Not Found: Group does not exist
 - 500 Internal Server Error: Database-related issues
 
 
-GET /groups/:id - Get words from a specific group (This is intended to be used by target apps)
-page: Page number (default: 1)
-sort_by: Sort field ('name', 'words_count') (default: 'name')
-order: Sort order ('asc' or 'desc') (default: 'asc')
+### GET /groups/{id}/words
+- Retrieve all details of words associated with a specific group by ID.
+- Returns:
+    - List of words with their details:
+        - **id**: ID of the word
+        - **kanji**: The kanji representation of the word
+        - **romaji**: The romaji representation of the word
+        - **english**: The English translation of the word
+
+Possible Errors:
+- 404 Not Found: Group does not exist
+- 500 Internal Server Error: Database-related issues
+
 
 ## study sessions
 
-POST /study_sessions - Create a new study session
+### POST /study_sessions - Create a new study session
 - **group_id**: ID of the group to study (required, integer)
 - **study_activity_id**: ID of the study activity (required, integer)
 
@@ -129,10 +138,20 @@ Possible Errors:
 - 404 Not Found: Group or study activity does not exist
 - 500 Internal Server Error: Database-related issues
 
+### POST /study_sessions/{id}/review - Log a review attempt for a word during a study session
+- **id**: ID of the study session (required)
+- **word_id**: ID of the word reviewed (required)
+- **correct**: Whether the answer was correct (required)
 
-POST /study_sessions/:id/review - Log a review attempt for a word during a study session
-group_id: ID of the group to study (required)
-study_activity_id: ID of the study activity (required)
+Returns:
+- **id**: Unique identifier of the review
+- **word_id**: ID of the word reviewed
+- **correct**: Whether the answer was correct
+
+Possible Errors:
+- 400 Bad Request: Missing required parameters
+- 404 Not Found: Study session does not exist
+- 500 Internal Server Error: Database-related issues
 
 
 # Design constraint
@@ -141,3 +160,8 @@ study_activity_id: ID of the study activity (required)
 - Foreign key constraints maintain referential integrity
 - JSON storage for word parts allows flexible component storage
 - Counter cache on groups.words_count optimizes word counting queries
+
+# Protype allowances
+- Backend is not validating inputs and trusting frontend
+- No authentication or authorization
+- Not good RESTful APIs (e.g. POST params in headers)

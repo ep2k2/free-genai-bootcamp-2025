@@ -88,43 +88,50 @@ def create_group(name: str):
         # Always close the connection
         conn.close()
 
-@app.get("/groups")
+@app.get("/groups/{id}")
 def get_groups(id: int):
     """
-    Return name and count of words in the specified group.
-
-    - **id**: ID of the group (required)
-    
-    Returns group details including name and word count.
+    Retrieve details of a group by ID, including the group's name, word count, and a list of word IDs in the group.
     """
-    # Database connection
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    try:
-        # Fetch group details with word count
-        group = cursor.execute("""
-            SELECT g.id, g.name, g.words_count 
-            FROM groups g 
-            WHERE g.id = ?
-        """, (id,)).fetchone()
-        
-        # Check if group exists
-        if not group:
-            raise HTTPException(status_code=404, detail=f"Group with id {id} not found")
-        
-        return {
-            "id": group[0],
-            "name": group[1],
-            "words_count": group[2]
-        }
-    
-    except sqlite3.Error as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    
-    finally:
-        # Always close the connection
-        conn.close()
+
+    # Fetch group details
+    group = cursor.execute("SELECT id, name, words_count FROM groups WHERE id = ?", (id,)).fetchone()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    # Fetch word IDs in the group
+    words = cursor.execute("SELECT w.id FROM words w JOIN word_groups wg ON w.id = wg.word_id WHERE wg.group_id = ?", (id,)).fetchall()
+
+    # Prepare response
+    response = {
+        "id": group[0],
+        "name": group[1],
+        "words_count": group[2],
+        "words": [{"id": word[0]} for word in words]
+    }
+
+    return response
+
+@app.get("/groups/{id}/words")
+def get_group_words(id: int):
+    """
+    Retrieve all details of words associated with a specific group by ID.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch words in the group
+    words = cursor.execute("SELECT w.id, w.kanji, w.romaji, w.english FROM words w JOIN word_groups wg ON w.id = wg.word_id WHERE wg.group_id = ?", (id,)).fetchall()
+
+    if not words:
+        raise HTTPException(status_code=404, detail="No words found for this group")
+
+    # Prepare response
+    response = [{"id": word[0], "kanji": word[1], "romaji": word[2], "english": word[3]} for word in words]
+
+    return response
 
 @app.post("/study_sessions")
 def create_study_session(group_id: int, study_activity_id: int):
@@ -183,23 +190,19 @@ def create_study_session(group_id: int, study_activity_id: int):
 @app.post("/study_sessions/{id}/review")
 async def log_review_attempt(
     id: int,
-    group_id: int = Query(...),
-    study_activity_id: int = Query(...),
-    correct: bool = Query(...),
-    word_id: int = Query(...)
+    word_id: int,
+    correct: bool
 ):
     """
     Log a review attempt for a word during a study session.
 
     - **id**: ID of the study session (required)
-    - **group_id**: ID of the group to study (required)
-    - **study_activity_id**: ID of the study activity (required)
-    - **correct**: Whether the answer was correct (required)
     - **word_id**: ID of the word reviewed (required)
+    - **correct**: Whether the answer was correct (required)
     """
     # Input validation
-    if not group_id or not study_activity_id or not word_id:
-        raise HTTPException(status_code=400, detail="Both group_id, study_activity_id and word_id are required")
+    if not word_id:
+        raise HTTPException(status_code=400, detail="word_id is required")
 
     # Database connection
     conn = get_db_connection()
