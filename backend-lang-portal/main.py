@@ -88,6 +88,44 @@ def create_group(name: str):
         # Always close the connection
         conn.close()
 
+@app.get("/groups")
+def get_groups(id: int):
+    """
+    Return name and count of words in the specified group.
+
+    - **id**: ID of the group (required)
+    
+    Returns group details including name and word count.
+    """
+    # Database connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Fetch group details with word count
+        group = cursor.execute("""
+            SELECT g.id, g.name, g.words_count 
+            FROM groups g 
+            WHERE g.id = ?
+        """, (id,)).fetchone()
+        
+        # Check if group exists
+        if not group:
+            raise HTTPException(status_code=404, detail=f"Group with id {id} not found")
+        
+        return {
+            "id": group[0],
+            "name": group[1],
+            "words_count": group[2]
+        }
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+    finally:
+        # Always close the connection
+        conn.close()
+
 @app.post("/study_sessions")
 def create_study_session(group_id: int, study_activity_id: int):
     """

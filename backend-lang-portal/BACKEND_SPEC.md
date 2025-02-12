@@ -96,7 +96,16 @@ Possible Errors:
 
 
 GET /groups - return name and count of words in the specified group
-id: ID of the group (required)
+- **id**: ID of the group (required, integer)
+
+Returns:
+- **id**: Unique identifier of the group
+- **name**: Name of the group
+- **words_count**: Number of words in the group
+
+Possible Errors:
+- 404 Not Found: Group does not exist
+- 500 Internal Server Error: Database-related issues
 
 
 GET /groups/:id - Get words from a specific group (This is intended to be used by target apps)
