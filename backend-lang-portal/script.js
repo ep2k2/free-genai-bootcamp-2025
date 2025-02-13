@@ -3,6 +3,9 @@ let kanjiArray = [];
 let gameInterval;
 let driftIntervals = []; // Array to hold all drift intervals
 
+// Object to track the current input state for each kanji
+const currentInputState = {};
+
 // TODO add keyboard matching to kanji romaji 
 // - highlight component parts
 // - when complete
@@ -14,13 +17,23 @@ let driftIntervals = []; // Array to hold all drift intervals
             // - word_id: ID of the word reviewed (required)
             // - correct: Whether the answer was correct (required)
 
+// Control variables
+const initialKanjiDelay = 100; // Delay for the first kanji to appear (in milliseconds)
+const subsequentKanjiDelay = 4000; // Delay for subsequent kanji (in milliseconds)
+const driftSpeed = 0.025; // Time in seconds per pixel
+
 // Function to start the game
 function startGame() {
     score = 0;
     document.getElementById('score').innerText = 'Score: ' + score;
     document.getElementById('kanji-display').innerHTML = '';
+    kanjiArray.forEach(kanji => {
+        currentInputState[kanji.kanji] = { romajiPointer: 0 }; // Initialize pointer for each kanji
+    });
     loadWords();
     document.getElementById('start-button').style.display = 'none'; // Hide the start button
+    // Add keyboard event listener
+    document.addEventListener('keydown', handleKeyPress);
 }
 
 // Function to load words from a specified group
@@ -48,23 +61,11 @@ function loadWords() {
 
 // Function to animate kanji falling down
 function animateKanji() {
-    let currentKanjiIndex = 0;
-    // Introduce the first kanji after 2 seconds
-    setTimeout(() => {
-        displayKanji(kanjiArray[currentKanjiIndex]);
-        currentKanjiIndex++;
-    }, 2000);
-    gameInterval = setInterval(() => {
-        if (currentKanjiIndex < kanjiArray.length) {
-            const kanji = kanjiArray[currentKanjiIndex];
+    kanjiArray.forEach((kanji, index) => {
+        setTimeout(() => {
             displayKanji(kanji);
-            currentKanjiIndex++;
-        } else {
-            clearInterval(gameInterval);
-            // Reset the game or show end screen
-            document.getElementById('start-button').style.display = 'block'; // Show the start button
-        }
-    }, 5000); // Introduce a new kanji every 5 seconds
+        }, index === 0 ? initialKanjiDelay : subsequentKanjiDelay * index);
+    });
 }
 
 // Function to display kanji on the screen
@@ -83,7 +84,7 @@ function displayKanji(kanji) {
     // Animate kanji drifting down
     let position = 0;
     const driftInterval = setInterval(() => {
-        position += 2; // Move down
+        position += 1; // Move down one pixel
         kanjiElement.style.transform = 'translateY(' + position + 'px)';
 
         // Check if kanji reaches the bottom
@@ -101,10 +102,47 @@ function displayKanji(kanji) {
                 // - correct: Whether the answer was correct (required)
             document.getElementById('start-button').style.display = 'block'; // Show the start button
         }
-    }, 20);
+    }, driftSpeed * 1000); // Convert seconds to milliseconds
 
     // Store this interval
     driftIntervals.push(driftInterval);
+}
+
+function handleKeyPress(event) {
+    const typedChar = event.key;
+    // Check each kanji on screen
+    Object.keys(currentInputState).forEach(kanji => {
+        const romaji = kanjiArray.find(k => k.kanji === kanji).romaji;
+        const pointer = currentInputState[kanji].romajiPointer;
+
+        // If the pointer is within the bounds of the romaji
+        if (pointer < romaji.length) {
+            if (typedChar === romaji[pointer]) {
+                // Advance the pointer
+                currentInputState[kanji].romajiPointer++;
+                // Check if the end of the romaji is reached
+                if (currentInputState[kanji].romajiPointer === romaji.length) {
+                    // Remove the kanji from display and increment score
+                    removeKanji(kanji);
+                    score++;
+                    document.getElementById('score').innerText = 'Score: ' + score;
+                }
+            } else {
+                // Reset the pointer if the character does not match
+                currentInputState[kanji].romajiPointer = 0;
+            }
+        }
+    });
+}
+
+function removeKanji(kanji) {
+    // Logic to remove the kanji from the display
+    const kanjiDisplay = document.getElementById('kanji-display');
+    const kanjiElement = Array.from(kanjiDisplay.children).find(el => el.innerText === kanji);
+    if (kanjiElement) {
+        kanjiDisplay.removeChild(kanjiElement);
+        delete currentInputState[kanji]; // Clean up the input state
+    }
 }
 
 // Event listener for start button
