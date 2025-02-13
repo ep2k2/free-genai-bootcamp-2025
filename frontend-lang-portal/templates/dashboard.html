@@ -42,8 +42,16 @@
                 <h2 class="card-title h4 mb-4">My Word Groups</h2>
                 
                 <!-- Last Studied Section -->
-                <div>
+                <div class="mb-4">
                     <h3 class="h5 mb-3">Last Studied</h3>
+                    <div class="group-info p-3 bg-light rounded" id="lastStudiedGroup">
+                        <!-- Last studied group data will be populated here -->
+                    </div>
+                </div>
+
+                <!-- All Groups Section -->
+                <div>
+                    <h3 class="h5 mb-3">All Groups</h3>
                     <div class="list-group" id="wordGroups">
                         <!-- Word groups will be populated via JavaScript -->
                     </div>
@@ -118,28 +126,76 @@ async function fetchRecentSessions() {
     });
 }
 
-// Function to fetch and display word groups
-async function fetchWordGroups() {
-    const response = await fetch('/api/word-groups');
-    const groups = await response.json();
-    const wordGroupsDiv = document.getElementById('wordGroups');
-    groups.forEach(group => {
-        const groupItem = document.createElement('a');
-        groupItem.className = 'list-group-item list-group-item-action';
-        groupItem.innerHTML = `<div class='d-flex w-100 justify-content-between'>` +
-            `<h6 class='mb-1'>${group.name}</h6>` +
-            `<span class='badge bg-primary rounded-pill'>${group.wordCount} words</span>` +
-            `</div>`;
-        groupItem.onclick = () => showDetails(group.id);
-        wordGroupsDiv.appendChild(groupItem);
-    });
+// Function to fetch and display recent groups
+async function fetchRecentGroups() {
+    try {
+        const response = await fetch('/groups');
+        const groups = await response.json();
+        
+        const recentGroupsDiv = document.getElementById('wordGroups');
+        const recentGroups = groups.slice(0, 5); // Get only the 5 most recent groups
+        
+        if (recentGroups.length === 0) {
+            recentGroupsDiv.innerHTML = '<p class="text-muted">No groups created yet</p>';
+            return;
+        }
+        
+        recentGroupsDiv.innerHTML = recentGroups.map(group => `
+            <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onclick="showDetails('group-${group.id}')">
+                <span>${group.name}</span>
+                <span class="text-muted"><i class="bi bi-book"></i> ${group.words_count} words</span>
+            </a>
+        `).join('');
+    } catch (error) {
+        console.error('Error fetching recent groups:', error);
+        const recentGroupsDiv = document.getElementById('wordGroups');
+        recentGroupsDiv.innerHTML = '<p class="text-danger">Error loading recent groups</p>';
+    }
+}
+
+// Function to fetch and display last studied word group
+async function fetchLastStudiedGroup() {
+    try {
+        // First get all sessions to find the latest one
+        const response = await fetch('/study_sessions');
+        const sessions = await response.json();
+        
+        if (sessions.length === 0) {
+            const lastStudiedGroupDiv = document.getElementById('lastStudiedGroup');
+            lastStudiedGroupDiv.innerHTML = '<p class="text-muted mb-0">No study sessions yet</p>';
+            return;
+        }
+        
+        // Find the last session (highest ID)
+        const lastSession = sessions.reduce((prev, current) => (prev.id > current.id) ? prev : current);
+        
+        // Get the group details using the group_id
+        const groupResponse = await fetch(`/groups/${lastSession.group_id}`);
+        const groupDetails = await groupResponse.json();
+        
+        console.log('Last session:', lastSession);
+        console.log('Group details:', groupDetails);
+        
+        const lastStudiedGroupDiv = document.getElementById('lastStudiedGroup');
+        lastStudiedGroupDiv.innerHTML = `
+            <h4 class='h6 mb-2'>${groupDetails.name}</h4>
+            <p class='text-muted mb-2'>Words in group: ${groupDetails.words_count}</p>
+            <div class='d-flex gap-3'>
+                <span><i class='bi bi-book'></i> ${groupDetails.words.length} words</span>
+            </div>`;
+    } catch (error) {
+        console.error('Error fetching last studied group:', error);
+        const lastStudiedGroupDiv = document.getElementById('lastStudiedGroup');
+        lastStudiedGroupDiv.innerHTML = '<p class="text-danger mb-0">Error loading last studied group</p>';
+    }
 }
 
 // Fetch data on page load
 window.onload = async () => {
     await fetchLastSession();
     await fetchRecentSessions();
-    await fetchWordGroups();
+    await fetchLastStudiedGroup();
+    await fetchRecentGroups();
 };
 
 // Function to show details of a session or word group

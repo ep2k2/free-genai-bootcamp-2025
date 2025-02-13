@@ -98,6 +98,12 @@ Possible Errors:
   - Group name already exists
 - 500 Internal Server Error: Database-related issues
 
+### GET /groups/
+- Retrieve details of all groups.
+- Returns:
+    - **id**: ID of the group
+    - **name**: Name of the group
+    - **words_count**: Number of words in the group
 
 ### GET /groups/{id}
 - Retrieve details of a group by ID.

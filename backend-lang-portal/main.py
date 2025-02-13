@@ -95,6 +95,40 @@ def create_group(name: str):
         # Always close the connection
         conn.close()
 
+@app.get("/groups")
+def get_all_groups():
+    """
+    Retrieve details of all groups.
+
+    Returns:
+    - **id**: ID of the group
+    - **name**: Name of the group
+    - **words_count**: Number of words in the group
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Fetch all groups with their details, ordered by creation date descending
+        groups = cursor.execute("""
+            SELECT id, name, words_count 
+            FROM groups 
+            ORDER BY id DESC"""
+        ).fetchall()
+
+        return [
+            {
+                "id": group[0],
+                "name": group[1],
+                "words_count": group[2]
+            }
+            for group in groups
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
 @app.get("/groups/{id}")
 def get_groups(id: int):
     """
@@ -273,8 +307,7 @@ async def get_study_session(id: int):
 @app.post("/study_sessions/{id}/review")
 async def log_review_attempt(
     id: int,
-    word_id: int,
-    correct: bool
+    review: dict = Body(...)
 ):
     """
     Log a review attempt for a word during a study session.
@@ -283,9 +316,14 @@ async def log_review_attempt(
     - **word_id**: ID of the word reviewed (required)
     - **correct**: Whether the answer was correct (required)
     """
+    word_id = review.get('word_id')
+    correct = review.get('correct')
+
     # Input validation
     if not word_id:
         raise HTTPException(status_code=400, detail="word_id is required")
+    if correct is None:
+        raise HTTPException(status_code=400, detail="correct is required")
 
     # Database connection
     conn = get_db_connection()

@@ -3,7 +3,7 @@ let kanjiArray = [];
 let gameInterval;
 let driftIntervals = []; // Array to hold all drift intervals
 
-// Object to track the current input state for each kanji
+// Object to track the current input state for each kanji element
 const currentInputState = {};
 
 // Control variables
@@ -50,10 +50,6 @@ function loadWords() {
                 };
             });
             console.log('Processed kanjiArray:', kanjiArray); // Debug: Log the processed array
-            // Initialize currentInputState after words are loaded
-            kanjiArray.forEach(kanji => {
-                currentInputState[kanji.kanji] = { romajiPointer: 0 };
-            });
             // Call function to start displaying kanji
             animateKanji();
         })
@@ -91,6 +87,18 @@ function displayKanji(kanji) {
     kanjiElement.innerText = kanji.kanji;
     kanjiElement.classList.add('kanji');
     kanjiElement.dataset.id = kanji.id;
+    // Generate a unique ID for this instance
+    const instanceId = Date.now() + Math.random();
+    kanjiElement.dataset.instanceId = instanceId;
+    // Store the word ID directly on the element as well as in the input state
+    kanjiElement.dataset.wordId = kanji.id;
+    // Initialize input state for this instance
+    currentInputState[instanceId] = { 
+        romajiPointer: 0,
+        kanji: kanji.kanji,
+        romaji: kanji.romaji,
+        wordId: kanji.id
+    };
     console.log('Stored kanji ID in dataset:', kanjiElement.dataset.id);
     kanjiDisplay.appendChild(kanjiElement);
 
@@ -109,10 +117,21 @@ function displayKanji(kanji) {
         const kanjiDisplayHeight = kanjiDisplay.clientHeight;
         const kanjiHeight = kanjiElement.offsetHeight;
         if (position + kanjiHeight > kanjiDisplayHeight) {
-            // Stop this kanji's animation but do not remove it
+            // End the game immediately
             clearInterval(driftInterval);
-            // Optionally, you can log a review attempt here if needed
-            // logReviewAttempt(kanji.id, false); #TODO
+            clearInterval(gameInterval);
+            driftIntervals.forEach(interval => clearInterval(interval));
+            document.getElementById('start-button').style.display = 'block';
+            document.removeEventListener('keydown', handleKeyPress);
+            
+            // Get word ID from either input state or element dataset
+            const wordId = (currentInputState[instanceId] && currentInputState[instanceId].wordId) || 
+                          kanjiElement.dataset.wordId;
+            
+            // Log failed review attempt if we have a word ID
+            if (wordId) {
+                logReviewAttempt(wordId, false);
+            }
         }
     }, driftSpeed * 1000);
 
@@ -122,66 +141,62 @@ function displayKanji(kanji) {
 
 function handleKeyPress(event) {
     const typedChar = event.key;
-    // Check each kanji on screen
-    Object.keys(currentInputState).forEach(kanji => {
-        const romaji = kanjiArray.find(k => k.kanji === kanji).romaji;
-        const pointer = currentInputState[kanji].romajiPointer;
-
-        if (pointer < romaji.length) {
-            if (typedChar === romaji[pointer]) {
+    const kanjiDisplay = document.getElementById('kanji-display');
+    
+    // Check each kanji element on screen
+    Array.from(kanjiDisplay.children).forEach(element => {
+        const instanceId = element.dataset.instanceId;
+        const state = currentInputState[instanceId];
+        
+        if (state && state.romajiPointer < state.romaji.length) {
+            if (typedChar === state.romaji[state.romajiPointer]) {
                 // Advance the pointer
-                currentInputState[kanji].romajiPointer++;
-                if (currentInputState[kanji].romajiPointer === romaji.length) {
-                    // Remove the kanji from display and increment score
-                    removeKanji(kanji);
+                state.romajiPointer++;
+                if (state.romajiPointer === state.romaji.length) {
+                    // Remove this instance of the kanji and increment score
+                    element.remove();
                     score++;
                     document.getElementById('score').innerText = 'Score: ' + score;
-                    const wordId = kanjiArray.find(k => k.kanji === kanji).id; // Get the word_id
-                    // logReviewAttempt(wordId, true); // Log success with the correct word_id # TODO
+                    
+                    // Log successful review attempt
+                    logReviewAttempt(state.wordId, true);
+                    
+                    delete currentInputState[instanceId];
                 }
             } else {
                 // Reset the pointer if the character does not match
-                currentInputState[kanji].romajiPointer = 0;
+                state.romajiPointer = 0;
             }
         }
     });
 }
 
-function removeKanji(kanji) {
-    // Logic to remove the kanji from the display
-    const kanjiDisplay = document.getElementById('kanji-display');
-    const kanjiElement = Array.from(kanjiDisplay.children).find(el => el.innerText === kanji);
-    if (kanjiElement) {
-        kanjiDisplay.removeChild(kanjiElement);
-        delete currentInputState[kanji]; // Clean up the input state
-    }
-}
-
 function logReviewAttempt(word_id, correct) {
-    console.log('Attempting to log review with word_id:', word_id, 'correct:', correct); // Debug: Log the parameters
-    console.log('Request URL:', `/study_sessions/${window.sessionId}/review`); // Debug: Log the URL
-    console.log('Request body:', { word_id, correct }); // Debug: Log the request body
+    console.log('Attempting to log review with word_id:', word_id, 'correct:', correct);
+    console.log('Request URL:', `/study_sessions/${window.sessionId}/review`);
+    console.log('Request body:', { word_id, correct });
+    
     fetch(`/study_sessions/${window.sessionId}/review`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            word_id: word_id,
-            correct: correct, // Use the variable that indicates whether the answer was correct
+            word_id: parseInt(word_id), // Ensure word_id is sent as an integer
+            correct: Boolean(correct)    // Ensure correct is sent as a boolean
         }),
     })
     .then(response => {
         if (!response.ok) {
             return response.text().then(text => {
-                console.error('Error response:', text); // Debug: Log error response
+                console.error('Error response:', text);
                 throw new Error('Network response was not ok');
             });
         }
         return response.json();
     })
     .then(data => {
-        console.log('Review logged successfully:', data); // Debug: Log success response
+        console.log('Review logged successfully:', data);
     })
     .catch(error => {
         console.error('Error logging review attempt:', error);
