@@ -25,10 +25,25 @@ function startGame() {
 
 // Function to load words from a specified group
 function loadWords() {
-    // For now, let's use a sample array of kanji
-    // TODO Replace with API call to fetch words
-    kanjiArray = ['漢', '字', '習', '日本']; // Replace with API call to fetch words including parts
-    animateKanji();
+    fetch('/groups/5/words') // Update to use the correct endpoint - hard-coded for now to group=5 which is the test data set for typing tutor
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Extract kanji and romaji from the response
+            kanjiArray = data.map(item => ({
+                kanji: item.kanji, // Assuming the API returns a 'kanji' field
+                romaji: item.romaji // Assuming the API returns a 'romaji' field
+            }));
+            // Call function to start displaying kanji
+            animateKanji();
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
 // Function to animate kanji falling down
@@ -56,7 +71,7 @@ function animateKanji() {
 function displayKanji(kanji) {
     const kanjiDisplay = document.getElementById('kanji-display');
     const kanjiElement = document.createElement('div');
-    kanjiElement.innerText = kanji;
+    kanjiElement.innerText = kanji.kanji;
     kanjiElement.classList.add('kanji');
     kanjiDisplay.appendChild(kanjiElement);
 
