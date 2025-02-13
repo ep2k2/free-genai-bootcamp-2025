@@ -25,11 +25,20 @@
                 </div>
 
                 <!-- Recent Sessions Section -->
-                <div>
+                <div class="mb-4">
                     <h3 class="h5 mb-3">Recent Sessions</h3>
                     <div class="list-group" id="recentSessions">
                         <!-- Recent sessions will be populated via JavaScript -->
                     </div>
+                </div>
+
+                <!-- Launch Typing Practice Section -->
+                <div class="mb-4">
+                    <h3 class="h5 mb-3">Launch Typing Practice</h3>
+                    <a href="http://127.0.0.1:8000/static/index.html" target="_blank">
+                        <img src="/static/typing-tutor-background.svg" alt="Typing Tutor" class="img-thumbnail" style="width: 100px; height: auto;">
+                    </a>
+                    <p class="text-muted small italic">- hardcoded to use Typing Tutor test set</p>
                 </div>
             </div>
         </div>
@@ -179,7 +188,7 @@ async function fetchLastStudiedGroup() {
         const lastStudiedGroupDiv = document.getElementById('lastStudiedGroup');
         lastStudiedGroupDiv.innerHTML = `
             <h4 class='h6 mb-2'>${groupDetails.name}</h4>
-            <p class='text-muted mb-2'>Words in group: ${groupDetails.words_count}</p>
+            <p class='text-muted mb-2'></p>
             <div class='d-flex gap-3'>
                 <span><i class='bi bi-book'></i> ${groupDetails.words.length} words</span>
             </div>`;
@@ -199,21 +208,67 @@ window.onload = async () => {
 };
 
 // Function to show details of a session or word group
-function showDetails(itemId) {
+async function showDetails(itemId) {
     const detailsPanel = document.getElementById('detailsPanel');
     const detailsContent = document.getElementById('detailsContent');
     
     // Show the panel
     detailsPanel.style.display = 'block';
     
-    // Populate content based on the clicked item
-    // This is a placeholder - you'll need to implement the actual content population
-    if (itemId.startsWith('session')) {
-        detailsContent.innerHTML = `<h4>Session Details</h4>
-            <p>Details for session ${itemId}</p>`;
-    } else if (itemId.startsWith('group')) {
-        detailsContent.innerHTML = `<h4>Word Group Details</h4>
-            <p>Details for group ${itemId}</p>`;
+    try {
+        // Populate content based on the clicked item
+        if (itemId.startsWith('session')) {
+            detailsContent.innerHTML = `<h4>Session Details</h4>
+                <p>Details for session ${itemId}</p>`;
+        } else if (itemId.startsWith('group-')) {
+            // Extract the group ID from the itemId
+            const groupId = itemId.replace('group-', '');
+            
+            // Fetch the group's words
+            const response = await fetch(`/groups/${groupId}/words`);
+            const words = await response.json();
+            
+            // Fetch the group's details to get the name
+            const groupResponse = await fetch(`/groups/${groupId}`);
+            const groupDetails = await groupResponse.json();
+            
+            // Create the table HTML
+            const tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="font-size: 1.1em;">Kanji</th>
+                                <th>Romaji</th>
+                                <th>English</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${words.map(word => `
+                                <tr>
+                                    <td>${word.kanji}</td>
+                                    <td><code>${word.romaji}</code></td>
+                                    <td>${word.english}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Update the details content
+            detailsContent.innerHTML = `
+                <h4 class="mb-4">Words in <span style="font-weight: bold; color: darkgrey;">${groupDetails.name}</span> Group</h4>
+                ${words.length > 0 ? tableHTML : '<p class="text-muted">No words in this group yet</p>'}
+            `;
+        }
+    } catch (error) {
+        console.error('Error showing details:', error);
+        detailsContent.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                Error loading details. Please try again.
+            </div>
+        `;
     }
     
     // Smooth scroll to details panel

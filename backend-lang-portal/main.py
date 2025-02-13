@@ -166,9 +166,6 @@ def get_group_words(id: int):
     # Fetch words in the group
     words = cursor.execute("SELECT w.id, w.kanji, w.romaji, w.english FROM words w JOIN word_groups wg ON w.id = wg.word_id WHERE wg.group_id = ?", (id,)).fetchall()
 
-    if not words:
-        raise HTTPException(status_code=404, detail="No words found for this group")
-
     # Prepare response
     response = [{"id": word[0], "kanji": word[1], "romaji": word[2], "english": word[3]} for word in words]
 
