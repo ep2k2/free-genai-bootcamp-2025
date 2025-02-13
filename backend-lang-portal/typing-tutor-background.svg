@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+  <!-- Sky background -->
+  <rect width="1200" height="600" fill="#f5f5f5"/>
+  
+  <!-- Distant mountains -->
+  <path d="M0 200 Q 300 150, 600 200 Q 900 250, 1200 200 L1200 600 L0 600 Z" fill="#e0e0e0"/>
+  
+  <!-- Middle ground mountains -->
+  <path d="M-100 300 Q 300 250, 700 300 Q 1000 350, 1300 300 L1300 600 L-100 600 Z" fill="#d3d3d3"/>
+  
+  <!-- Foreground hills -->
+  <path d="M-200 400 Q 400 350, 800 400 Q 1100 450, 1400 400 L1400 600 L-200 600 Z" fill="#c0c0c0"/>
+  
+  <!-- Traditional torii gate -->
+  <path d="M500 250 L520 250 L520 400 L500 400 Z" fill="#a9a9a9"/>
+  <path d="M680 250 L700 250 L700 400 L680 400 Z" fill="#a9a9a9"/>
+  <path d="M480 270 L720 270 L740 250 L460 250 Z" fill="#b8b8b8"/>
+  <path d="M490 230 L710 230 L720 210 L480 210 Z" fill="#b8b8b8"/>
+  
+  <!-- Stylized clouds -->
+  <path d="M100 100 Q 150 80, 200 100 Q 250 120, 300 100" fill="none" stroke="#dcdcdc" stroke-width="2"/>
+  <path d="M800 150 Q 850 130, 900 150 Q 950 170, 1000 150" fill="none" stroke="#dcdcdc" stroke-width="2"/>
+  
+  <!-- Distant trees -->
+  <path d="M150 350 Q 170 320, 190 350" fill="none" stroke="#a9a9a9" stroke-width="2"/>
+  <path d="M850 380 Q 870 350, 890 380" fill="none" stroke="#a9a9a9" stroke-width="2"/>
+</svg>

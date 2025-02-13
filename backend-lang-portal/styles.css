@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Light background color */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+h1 {
+    color: #333; /* Darker text color */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+#score {
+    position: absolute; /* Position it absolutely within the kanji-display area */
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    font-size: 16px; /* Match font size with the button */
+    color: #fff; /* White color for visibility */
+    background-color: #4CAF50; /* Match background color with the button */
+    padding: 5px 10px; /* Match padding with the button */
+    border-radius: 5px; /* Rounded corners */
+}
+
+#kanji-display {
+    border: 2px solid black; /* Visible border color */
+    padding: 10px; /* Padding inside the border */
+    height: 500px; /* Set a deeper height for the display area */
+    overflow: hidden; /* Hide overflow if kanji exceed the area */
+    background-image: url('typing-tutor-background.svg'); /* Add SVG background */
+    background-size: cover; /* Ensure the background covers the area */
+    background-position: center; /* Center the background */
+    position: relative; /* Create a relative positioning context for the score */
+}
+
+.kanji {
+    font-size: 48px; /* Increase the font size of kanji */
+}
+
+button, #start-button {
+    display: inline-block; /* Keep it inline with the title */
+    margin-left: 10px; /* Space between title and button */
+    padding: 10px 20px; /* Consistent padding */
+    font-size: 16px; /* Consistent font size */
+    position: fixed; /* Ensure the start button remains fixed at the top */
+    top: 0; /* Position the start button at the top */
+    z-index: 1; /* Ensure the start button does not interfere with the game border */
+}
+
+#start-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #fff; /* Adjust color for visibility */
+    text-align: center;
+}

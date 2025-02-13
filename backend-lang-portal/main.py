@@ -1,9 +1,13 @@
 import sqlite3
 from fastapi import FastAPI, Query, HTTPException, Body
+from fastapi.staticfiles import StaticFiles
 from typing import List, Dict, Any, Optional
 
 # FastAPI app
 app = FastAPI()
+
+# Serve static files
+app.mount("/static", StaticFiles(directory="backend-lang-portal"), name="static")
 
 # Database connection
 def get_db_connection():
