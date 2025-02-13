@@ -12,6 +12,10 @@ body {
 
 h1 {
     color: #333; /* Darker text color */
+    font-size: 36px; /* Larger font size */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+    font-family: 'Arial', sans-serif; /* Font family */
+    margin-bottom: 20px;
 }
 
 button {
@@ -19,9 +23,6 @@ button {
     font-size: 16px;
     background-color: #4CAF50; /* Green background */
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
 button:hover {

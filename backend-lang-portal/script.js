@@ -20,7 +20,7 @@ const currentInputState = {};
 // Control variables
 const initialKanjiDelay = 100; // Delay for the first kanji to appear (in milliseconds)
 const subsequentKanjiDelay = 4000; // Delay for subsequent kanji (in milliseconds)
-const driftSpeed = 0.025; // Time in seconds per pixel
+const driftSpeed = 0.025; // Time in seconds per pixel 0.025 good slow speed - increased to debug
 
 // Function to start the game
 function startGame() {
@@ -36,6 +36,13 @@ function startGame() {
     document.addEventListener('keydown', handleKeyPress);
 }
 
+// Function to start the game with a study session
+function startGameWithSession(sessionId) {
+    // Store the session ID for later use
+    window.sessionId = sessionId; // Store it globally or in a suitable scope
+    startGame(); // Call the existing startGame function
+}
+
 // Function to load words from a specified group
 function loadWords() {
     fetch('/groups/5/words') // Update to use the correct endpoint - hard-coded for now to group=5 which is the test data set for typing tutor
@@ -46,11 +53,17 @@ function loadWords() {
             return response.json();
         })
         .then(data => {
+            console.log('API Response:', data); // Debug: Log the API response
             // Extract kanji and romaji from the response
-            kanjiArray = data.map(item => ({
-                kanji: item.kanji, // Assuming the API returns a 'kanji' field
-                romaji: item.romaji // Assuming the API returns a 'romaji' field
-            }));
+            kanjiArray = data.map(item => {
+                console.log('Processing item:', item); // Debug: Log each item
+                return {
+                    id: item.id, // Assuming the API returns an 'id' field
+                    kanji: item.kanji, // Assuming the API returns a 'kanji' field
+                    romaji: item.romaji // Assuming the API returns a 'romaji' field
+                };
+            });
+            console.log('Processed kanjiArray:', kanjiArray); // Debug: Log the processed array
             // Call function to start displaying kanji
             animateKanji();
         })
@@ -70,14 +83,18 @@ function animateKanji() {
 
 // Function to display kanji on the screen
 function displayKanji(kanji) {
+    console.log('Displaying kanji object:', kanji); // Debug: Log the kanji object being displayed
     const kanjiDisplay = document.getElementById('kanji-display');
     const kanjiElement = document.createElement('div');
     kanjiElement.innerText = kanji.kanji;
     kanjiElement.classList.add('kanji');
+    // Store the full kanji object in the element's dataset
+    kanjiElement.dataset.id = kanji.id;
+    console.log('Stored kanji ID in dataset:', kanjiElement.dataset.id); // Debug: Log the stored ID
     kanjiDisplay.appendChild(kanjiElement);
 
     // Randomize X position
-    const randomX = Math.random() * (kanjiDisplay.clientWidth - 50); // Adjust based on kanji width
+    const randomX = Math.random() * (kanjiDisplay.clientWidth - 100); // Adjust based on kanji width
     kanjiElement.style.position = 'absolute';
     kanjiElement.style.left = randomX + 'px';
 
@@ -92,14 +109,10 @@ function displayKanji(kanji) {
         const kanjiHeight = kanjiElement.offsetHeight; // Get the height of the kanji element
         if (position + kanjiHeight > kanjiDisplayHeight) {
             clearInterval(driftInterval); // Stop this kanji's animation
-            // Clear all drift intervals
-            driftIntervals.forEach(interval => clearInterval(interval));
+            driftIntervals.forEach(interval => clearInterval(interval)); // Clear all drift intervals
             clearInterval(gameInterval); // Stop the game
-            // Record failed review instance
-            // POST /study_sessions/{id}/review - Log a review attempt for a word during a study session
-                // - id: ID of the study session (required)
-                // - word_id: ID of the word reviewed (required)
-                // - correct: Whether the answer was correct (required)
+            removeKanji(kanji.kanji); // Remove the kanji from display
+            logReviewAttempt(kanji.id, false); // Log failure with the correct word_id
             document.getElementById('start-button').style.display = 'block'; // Show the start button
         }
     }, driftSpeed * 1000); // Convert seconds to milliseconds
@@ -115,17 +128,17 @@ function handleKeyPress(event) {
         const romaji = kanjiArray.find(k => k.kanji === kanji).romaji;
         const pointer = currentInputState[kanji].romajiPointer;
 
-        // If the pointer is within the bounds of the romaji
         if (pointer < romaji.length) {
             if (typedChar === romaji[pointer]) {
                 // Advance the pointer
                 currentInputState[kanji].romajiPointer++;
-                // Check if the end of the romaji is reached
                 if (currentInputState[kanji].romajiPointer === romaji.length) {
                     // Remove the kanji from display and increment score
                     removeKanji(kanji);
                     score++;
                     document.getElementById('score').innerText = 'Score: ' + score;
+                    const wordId = kanjiArray.find(k => k.kanji === kanji).id; // Get the word_id
+                    logReviewAttempt(wordId, true); // Log success with the correct word_id
                 }
             } else {
                 // Reset the pointer if the character does not match
@@ -145,8 +158,39 @@ function removeKanji(kanji) {
     }
 }
 
+function logReviewAttempt(word_id, correct) {
+    console.log('Attempting to log review with word_id:', word_id, 'correct:', correct); // Debug: Log the parameters
+    console.log('Request URL:', `/study_sessions/${window.sessionId}/review`); // Debug: Log the URL
+    console.log('Request body:', { word_id, correct }); // Debug: Log the request body
+    fetch(`/study_sessions/${window.sessionId}/review`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            word_id: word_id,
+            correct: correct, // Use the variable that indicates whether the answer was correct
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                console.error('Error response:', text); // Debug: Log error response
+                throw new Error('Network response was not ok');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Review logged successfully:', data); // Debug: Log success response
+    })
+    .catch(error => {
+        console.error('Error logging review attempt:', error);
+    });
+}
+
 // Event listener for start button
-document.getElementById('start-button').addEventListener('click', startGame);
+document.getElementById('start-button').addEventListener('click', () => startGameWithSession('2')); // test study_session id = 2 - in database this is for activity=1 "typing" using group 5 "test data"
 
 // Show the button when the game is not running
 document.getElementById('start-button').style.display = 'block';
