@@ -1,56 +1,112 @@
 {% extends "base.html" %}
 
-{% block title %}My Dashboard{% endblock %}
+{% block title %}Dashboard - Language Learning Portal{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">My Dashboard</h1>
-
-<div class="dashboard-grid">
-    <!-- Study Sessions Section -->
-    <div class="dashboard-card">
-        <h2>Study Sessions</h2>
-        
-        <!-- Last Session -->
-        <div class="subsection">
-            <h3>Last</h3>
-            <div class="session-info" id="lastSession">
-                <h4 class="session-title"></h4>
-                <p class="session-timestamp"></p>
-                <div class="session-stats">
-                    <span class="correct"><i class="bi bi-check-circle"></i> <span class="correct-count">0</span></span>
-                    <span class="incorrect"><i class="bi bi-x-circle"></i> <span class="incorrect-count">0</span></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Sessions -->
-        <div class="subsection">
-            <h3>Recent Sessions</h3>
-            <div class="session-list" id="recentSessions">
-                <!-- Sessions will be populated via JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Word Groups Section -->
-    <div class="dashboard-card">
-        <h2>My Word Groups</h2>
-        
-        <!-- Last Studied -->
-        <div class="subsection">
-            <h3>Last Studied</h3>
-            <div class="word-groups-list" id="wordGroups">
-                <!-- Word groups will be populated via JavaScript -->
-            </div>
-        </div>
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4 mb-4">Welcome to Your Learning Dashboard</h1>
     </div>
 </div>
 
-<!-- Details Panel -->
-<div class="details-panel mt-4" id="detailsPanel">
-    <h3>Details</h3>
-    <div class="details-content">
-        <!-- Details will be populated via JavaScript when items are clicked -->
+<div class="row g-4">
+    <!-- Word Groups Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Word Groups</h5>
+                    <span class="badge bg-primary rounded-pill">5 Groups</span>
+                </div>
+                <p class="card-text">Organize your vocabulary into themed groups for better learning.</p>
+                <a href="#" class="btn btn-primary">Manage Groups</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Progress Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Study Progress</h5>
+                    <span class="badge bg-success rounded-pill">85%</span>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                </div>
+                <p class="card-text">Track your learning progress across all word groups.</p>
+                <a href="#" class="btn btn-success">View Details</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Practice Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Quick Practice</h5>
+                    <span class="badge bg-warning rounded-pill">Daily Goal</span>
+                </div>
+                <p class="card-text">Start a quick practice session with random words from your groups.</p>
+                <a href="#" class="btn btn-warning">Start Practice</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Card -->
+    <div class="col-md-6 col-lg-8">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Recent Activity</h5>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Completed Practice Session</h6>
+                            <small class="text-muted">3 hours ago</small>
+                        </div>
+                        <p class="mb-1">Score: 8/10 words correct</p>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Added New Words</h6>
+                            <small class="text-muted">Yesterday</small>
+                        </div>
+                        <p class="mb-1">Added 5 new words to "Food & Drinks" group</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Statistics</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Total Words:</span>
+                            <strong>150</strong>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>Mastered:</span>
+                            <strong>89</strong>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>In Progress:</span>
+                            <strong>61</strong>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

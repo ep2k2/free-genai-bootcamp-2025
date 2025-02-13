@@ -1,3 +1,19 @@
+/* Global Styles */
+:root {
+    --primary-color: #4a90e2;
+    --success-color: #2ecc71;
+    --warning-color: #f1c40f;
+    --danger-color: #e74c3c;
+    --text-color: #2c3e50;
+    --light-gray: #f8f9fa;
+}
+
+body {
+    color: var(--text-color);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Dashboard Grid Styles */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -5,19 +21,34 @@
     margin-bottom: 2rem;
 }
 
+/* Card Styles */
 .dashboard-card {
+    border: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 1.5rem;
 }
 
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+/* Card Body Styles */
+.dashboard-card-body {
+    padding: 1.5rem;
+}
+
+/* Card Title Styles */
 .dashboard-card h2 {
     margin-bottom: 1.5rem;
     color: #333;
     font-size: 1.5rem;
 }
 
+/* Subsection Styles */
 .subsection {
     margin-bottom: 1.5rem;
 }
@@ -28,6 +59,7 @@
     margin-bottom: 1rem;
 }
 
+/* Session Info Styles */
 .session-info {
     background: #f8f9fa;
     padding: 1rem;
@@ -58,6 +90,7 @@
     color: #dc3545;
 }
 
+/* Session List Styles */
 .session-list, .word-groups-list {
     display: flex;
     flex-direction: column;
@@ -65,17 +98,20 @@
 }
 
 .session-item, .word-group-item {
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
     padding: 0.75rem;
     background: #f8f9fa;
-    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
 .session-item:hover, .word-group-item:hover {
-    background: #e9ecef;
+    background-color: var(--light-gray);
 }
 
+/* Details Panel Styles */
 .details-panel {
     background: white;
     border-radius: 8px;
@@ -94,4 +130,84 @@
     border-radius: 4px;
     font-size: 0.9rem;
     color: #666;
+}
+
+/* Progress Bar */
+.progress {
+    height: 0.8rem;
+    border-radius: 1rem;
+    background-color: var(--light-gray);
+}
+
+.progress-bar {
+    background-color: var(--success-color);
+    border-radius: 1rem;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: #fff;
+}
+
+/* List Group */
+.list-group-item {
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+    background-color: var(--light-gray);
+}
+
+/* Statistics */
+.list-unstyled li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.list-unstyled li:last-child {
+    border-bottom: none;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Footer */
+.footer {
+    background-color: #2c3e50 !important;
+    color: white;
 }
