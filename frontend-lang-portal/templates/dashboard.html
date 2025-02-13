@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Dashboard</h1>
+
+<div class="dashboard-grid">
+    <!-- Study Sessions Section -->
+    <div class="dashboard-card">
+        <h2>Study Sessions</h2>
+        
+        <!-- Last Session -->
+        <div class="subsection">
+            <h3>Last</h3>
+            <div class="session-info" id="lastSession">
+                <h4 class="session-title"></h4>
+                <p class="session-timestamp"></p>
+                <div class="session-stats">
+                    <span class="correct"><i class="bi bi-check-circle"></i> <span class="correct-count">0</span></span>
+                    <span class="incorrect"><i class="bi bi-x-circle"></i> <span class="incorrect-count">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Sessions -->
+        <div class="subsection">
+            <h3>Recent Sessions</h3>
+            <div class="session-list" id="recentSessions">
+                <!-- Sessions will be populated via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Word Groups Section -->
+    <div class="dashboard-card">
+        <h2>My Word Groups</h2>
+        
+        <!-- Last Studied -->
+        <div class="subsection">
+            <h3>Last Studied</h3>
+            <div class="word-groups-list" id="wordGroups">
+                <!-- Word groups will be populated via JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Details Panel -->
+<div class="details-panel mt-4" id="detailsPanel">
+    <h3>Details</h3>
+    <div class="details-content">
+        <!-- Details will be populated via JavaScript when items are clicked -->
+    </div>
+</div>
+{% endblock %}

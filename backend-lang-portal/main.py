@@ -1,10 +1,13 @@
 import sqlite3
-from fastapi import FastAPI, Query, HTTPException, Body
+from fastapi import FastAPI, Request, Query, HTTPException, Body
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from typing import List, Dict, Any, Optional
 
 # FastAPI app
 app = FastAPI()
+templates = Jinja2Templates(directory="/mnt/c/free-genai-bootcamp-2025/frontend-lang-portal/templates")
 
 # Serve static files
 app.mount("/static", StaticFiles(directory="backend-lang-portal"), name="static")
@@ -231,5 +234,9 @@ async def log_review_attempt(
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def read_dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
 
 # Run the app with: uvicorn main:app --reload
