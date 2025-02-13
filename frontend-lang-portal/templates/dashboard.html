@@ -1,112 +1,167 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Language Learning Portal{% endblock %}
+{% block title %}My Dashboard{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col">
-        <h1 class="display-4 mb-4">Welcome to Your Learning Dashboard</h1>
+        <h1 class="display-4 mb-4">My Dashboard</h1>
     </div>
 </div>
 
 <div class="row g-4">
+    <!-- Study Sessions Card -->
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title h4 mb-4">Study Sessions</h2>
+                
+                <!-- Last Session Section -->
+                <div class="mb-4">
+                    <h3 class="h5 mb-3">Last</h3>
+                    <div class="session-info p-3 bg-light rounded" id="lastSession">
+                        <!-- Last session data will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Recent Sessions Section -->
+                <div>
+                    <h3 class="h5 mb-3">Recent Sessions</h3>
+                    <div class="list-group" id="recentSessions">
+                        <!-- Recent sessions will be populated via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Word Groups Card -->
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Word Groups</h5>
-                    <span class="badge bg-primary rounded-pill">5 Groups</span>
+                <h2 class="card-title h4 mb-4">My Word Groups</h2>
+                
+                <!-- Last Studied Section -->
+                <div>
+                    <h3 class="h5 mb-3">Last Studied</h3>
+                    <div class="list-group" id="wordGroups">
+                        <!-- Word groups will be populated via JavaScript -->
+                    </div>
                 </div>
-                <p class="card-text">Organize your vocabulary into themed groups for better learning.</p>
-                <a href="#" class="btn btn-primary">Manage Groups</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Study Progress Card -->
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Study Progress</h5>
-                    <span class="badge bg-success rounded-pill">85%</span>
-                </div>
-                <div class="progress mb-3">
-                    <div class="progress-bar" role="progressbar" style="width: 85%"></div>
-                </div>
-                <p class="card-text">Track your learning progress across all word groups.</p>
-                <a href="#" class="btn btn-success">View Details</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Practice Card -->
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Quick Practice</h5>
-                    <span class="badge bg-warning rounded-pill">Daily Goal</span>
-                </div>
-                <p class="card-text">Start a quick practice session with random words from your groups.</p>
-                <a href="#" class="btn btn-warning">Start Practice</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity Card -->
-    <div class="col-md-6 col-lg-8">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Recent Activity</h5>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">Completed Practice Session</h6>
-                            <small class="text-muted">3 hours ago</small>
-                        </div>
-                        <p class="mb-1">Score: 8/10 words correct</p>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">Added New Words</h6>
-                            <small class="text-muted">Yesterday</small>
-                        </div>
-                        <p class="mb-1">Added 5 new words to "Food & Drinks" group</p>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics Card -->
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Statistics</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span>Total Words:</span>
-                            <strong>150</strong>
-                        </div>
-                    </li>
-                    <li class="mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span>Mastered:</span>
-                            <strong>89</strong>
-                        </div>
-                    </li>
-                    <li class="mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span>In Progress:</span>
-                            <strong>61</strong>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Details Panel -->
+<div class="row mt-4">
+    <div class="col">
+        <div class="card shadow-sm" id="detailsPanel" style="display: none;">
+            <div class="card-body">
+                <h3 class="card-title h4 mb-4">Details</h3>
+                <div id="detailsContent">
+                    <!-- Details will be populated via JavaScript when items are clicked -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Function to fetch and display last session
+async function fetchLastSession() {
+    // First get all sessions to find the latest one
+    const response = await fetch('/study_sessions');
+    const sessions = await response.json();
+    
+    // Find the last session (highest ID)
+    const lastSession = sessions.reduce((prev, current) => (prev.id > current.id) ? prev : current);
+    
+    // Then get the details for this session including review counts
+    const detailsResponse = await fetch(`/study_sessions/${lastSession.id}`);
+    const sessionDetails = await detailsResponse.json();
+
+    const lastSessionDiv = document.getElementById('lastSession');
+    lastSessionDiv.innerHTML = `<h4 class='h6 mb-2'>${lastSession.activity_name}</h4>` +
+        `<p class='text-muted mb-2'>${sessionDetails.created_at}</p>` +
+        `<div class='d-flex gap-3'>` +
+        `<span class='text-success'><i class='bi bi-check-circle'></i> <span class='correct-count'>${sessionDetails.correct_count}</span> correct</span>` +
+        `<span class='text-danger'><i class='bi bi-x-circle'></i> <span class='incorrect-count'>${sessionDetails.incorrect_count}</span> incorrect</span>` +
+        `</div>`;
+}
+
+// Function to fetch and display recent sessions
+async function fetchRecentSessions() {
+    const response = await fetch('/study_sessions');
+    const sessions = await response.json();
+    const recentSessionsDiv = document.getElementById('recentSessions');
+    
+    // Clear existing content
+    recentSessionsDiv.innerHTML = '';
+    
+    // Add each session to the list
+    sessions.forEach(session => {
+        const sessionItem = document.createElement('a');
+        sessionItem.className = 'list-group-item list-group-item-action';
+        sessionItem.href = '#';
+        sessionItem.onclick = () => showDetails(session.id);
+        
+        sessionItem.innerHTML = `
+            <div class='d-flex w-100 justify-content-between'>
+                <h6 class='mb-1'>${session.activity_name}</h6>
+                <small class='text-muted'>${session.created_at}</small>
+            </div>`;
+        recentSessionsDiv.appendChild(sessionItem);
+    });
+}
+
+// Function to fetch and display word groups
+async function fetchWordGroups() {
+    const response = await fetch('/api/word-groups');
+    const groups = await response.json();
+    const wordGroupsDiv = document.getElementById('wordGroups');
+    groups.forEach(group => {
+        const groupItem = document.createElement('a');
+        groupItem.className = 'list-group-item list-group-item-action';
+        groupItem.innerHTML = `<div class='d-flex w-100 justify-content-between'>` +
+            `<h6 class='mb-1'>${group.name}</h6>` +
+            `<span class='badge bg-primary rounded-pill'>${group.wordCount} words</span>` +
+            `</div>`;
+        groupItem.onclick = () => showDetails(group.id);
+        wordGroupsDiv.appendChild(groupItem);
+    });
+}
+
+// Fetch data on page load
+window.onload = async () => {
+    await fetchLastSession();
+    await fetchRecentSessions();
+    await fetchWordGroups();
+};
+
+// Function to show details of a session or word group
+function showDetails(itemId) {
+    const detailsPanel = document.getElementById('detailsPanel');
+    const detailsContent = document.getElementById('detailsContent');
+    
+    // Show the panel
+    detailsPanel.style.display = 'block';
+    
+    // Populate content based on the clicked item
+    // This is a placeholder - you'll need to implement the actual content population
+    if (itemId.startsWith('session')) {
+        detailsContent.innerHTML = `<h4>Session Details</h4>
+            <p>Details for session ${itemId}</p>`;
+    } else if (itemId.startsWith('group')) {
+        detailsContent.innerHTML = `<h4>Word Group Details</h4>
+            <p>Details for group ${itemId}</p>`;
+    }
+    
+    // Smooth scroll to details panel
+    detailsPanel.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
 {% endblock %}

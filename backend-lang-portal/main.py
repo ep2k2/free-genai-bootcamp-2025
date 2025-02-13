@@ -194,6 +194,82 @@ def create_study_session(group_id: int, study_activity_id: int):
         # Always close the connection
         conn.close()
 
+@app.get("/study_sessions", response_model=List[Dict[str, Any]])
+async def get_study_sessions():
+    """
+    Retrieve a list of study sessions.
+
+    Returns:
+    - **id**: ID of the study session
+    - **group_id**: ID of the group which was studied
+    - **study_activity_id**: ID of the study activity used
+    - **activity_name**: Name of the study activity
+    - **created_at**: When the session was created
+    """
+    try:
+        conn = get_db_connection()
+        query = """
+            SELECT 
+                ss.id, 
+                ss.group_id, 
+                ss.study_activity_id,
+                sa.name as activity_name,
+                ss.created_at
+            FROM study_sessions ss
+            JOIN study_activities sa ON ss.study_activity_id = sa.id
+            ORDER BY ss.created_at DESC
+            LIMIT 5
+        """
+        sessions = conn.execute(query).fetchall()
+        conn.close()
+        return [dict(session) for session in sessions]
+    except Exception as e:
+        conn.close()  # Ensure the connection is closed on error
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/study_sessions/{id}", response_model=Dict[str, Any])
+async def get_study_session(id: int):
+    """
+    Get the detail of reviews from a specific study session.
+
+    Args:
+    - **id**: ID of the study session
+
+    Returns:
+    - **id**: ID of the study session
+    - **group_id**: ID of the group which was studied
+    - **study_activity_id**: ID of the study activity used
+    - **created_at**: When the session was created
+    - **correct_count**: count of correct = true reviews from the session
+    - **incorrect_count**: count of correct = false reviews from the session
+    """
+    try:
+        conn = get_db_connection()
+        
+        # First get the session details
+        session_query = """
+            SELECT 
+                ss.id,
+                ss.group_id,
+                ss.study_activity_id,
+                ss.created_at,
+                (SELECT COUNT(*) FROM word_review_items WHERE study_session_id = ss.id AND correct = 1) as correct_count,
+                (SELECT COUNT(*) FROM word_review_items WHERE study_session_id = ss.id AND correct = 0) as incorrect_count
+            FROM study_sessions ss
+            WHERE ss.id = ?
+        """
+        
+        session = conn.execute(session_query, (id,)).fetchone()
+        
+        if session is None:
+            raise HTTPException(status_code=404, detail="Study session not found")
+            
+        conn.close()
+        return dict(session)
+    except Exception as e:
+        conn.close()
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/study_sessions/{id}/review")
 async def log_review_attempt(
     id: int,

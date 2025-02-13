@@ -6,17 +6,6 @@ let driftIntervals = []; // Array to hold all drift intervals
 // Object to track the current input state for each kanji
 const currentInputState = {};
 
-// TODO add keyboard matching to kanji romaji 
-// - highlight component parts
-// - when complete
-//    remove element from display
-//    increment score
-//    PUT succesful review instance
-            // POST /study_sessions/{id}/review - Log a review attempt for a word during a study session
-            // - id: ID of the study session (required)
-            // - word_id: ID of the word reviewed (required)
-            // - correct: Whether the answer was correct (required)
-
 // Control variables
 const initialKanjiDelay = 100; // Delay for the first kanji to appear (in milliseconds)
 const subsequentKanjiDelay = 4000; // Delay for subsequent kanji (in milliseconds)
@@ -27,9 +16,6 @@ function startGame() {
     score = 0;
     document.getElementById('score').innerText = 'Score: ' + score;
     document.getElementById('kanji-display').innerHTML = '';
-    kanjiArray.forEach(kanji => {
-        currentInputState[kanji.kanji] = { romajiPointer: 0 }; // Initialize pointer for each kanji
-    });
     loadWords();
     document.getElementById('start-button').style.display = 'none'; // Hide the start button
     // Add keyboard event listener
@@ -64,6 +50,10 @@ function loadWords() {
                 };
             });
             console.log('Processed kanjiArray:', kanjiArray); // Debug: Log the processed array
+            // Initialize currentInputState after words are loaded
+            kanjiArray.forEach(kanji => {
+                currentInputState[kanji.kanji] = { romajiPointer: 0 };
+            });
             // Call function to start displaying kanji
             animateKanji();
         })
@@ -74,48 +64,57 @@ function loadWords() {
 
 // Function to animate kanji falling down
 function animateKanji() {
-    kanjiArray.forEach((kanji, index) => {
-        setTimeout(() => {
-            displayKanji(kanji);
-        }, index === 0 ? initialKanjiDelay : subsequentKanjiDelay * index);
-    });
+    // Keep a separate array for the original kanji data
+    const originalKanjiArray = [...kanjiArray];
+    
+    // Function to get a random kanji from our loaded set
+    function getRandomKanji() {
+        return originalKanjiArray[Math.floor(Math.random() * originalKanjiArray.length)];
+    }
+    
+    // Display first kanji after initial delay
+    setTimeout(() => {
+        displayKanji(getRandomKanji());
+    }, initialKanjiDelay);
+    
+    // Set up interval to keep adding new kanji
+    gameInterval = setInterval(() => {
+        displayKanji(getRandomKanji());
+    }, subsequentKanjiDelay);
 }
 
 // Function to display kanji on the screen
 function displayKanji(kanji) {
-    console.log('Displaying kanji object:', kanji); // Debug: Log the kanji object being displayed
+    console.log('Displaying kanji object:', kanji);
     const kanjiDisplay = document.getElementById('kanji-display');
     const kanjiElement = document.createElement('div');
     kanjiElement.innerText = kanji.kanji;
     kanjiElement.classList.add('kanji');
-    // Store the full kanji object in the element's dataset
     kanjiElement.dataset.id = kanji.id;
-    console.log('Stored kanji ID in dataset:', kanjiElement.dataset.id); // Debug: Log the stored ID
+    console.log('Stored kanji ID in dataset:', kanjiElement.dataset.id);
     kanjiDisplay.appendChild(kanjiElement);
 
     // Randomize X position
-    const randomX = Math.random() * (kanjiDisplay.clientWidth - 100); // Adjust based on kanji width
+    const randomX = Math.random() * (kanjiDisplay.clientWidth - 100);
     kanjiElement.style.position = 'absolute';
     kanjiElement.style.left = randomX + 'px';
 
     // Animate kanji drifting down
     let position = 0;
     const driftInterval = setInterval(() => {
-        position += 1; // Move down one pixel
+        position += 1;
         kanjiElement.style.transform = 'translateY(' + position + 'px)';
 
         // Check if kanji reaches the bottom
         const kanjiDisplayHeight = kanjiDisplay.clientHeight;
-        const kanjiHeight = kanjiElement.offsetHeight; // Get the height of the kanji element
+        const kanjiHeight = kanjiElement.offsetHeight;
         if (position + kanjiHeight > kanjiDisplayHeight) {
-            clearInterval(driftInterval); // Stop this kanji's animation
-            driftIntervals.forEach(interval => clearInterval(interval)); // Clear all drift intervals
-            clearInterval(gameInterval); // Stop the game
-            removeKanji(kanji.kanji); // Remove the kanji from display
-            logReviewAttempt(kanji.id, false); // Log failure with the correct word_id
-            document.getElementById('start-button').style.display = 'block'; // Show the start button
+            // Stop this kanji's animation but do not remove it
+            clearInterval(driftInterval);
+            // Optionally, you can log a review attempt here if needed
+            // logReviewAttempt(kanji.id, false); #TODO
         }
-    }, driftSpeed * 1000); // Convert seconds to milliseconds
+    }, driftSpeed * 1000);
 
     // Store this interval
     driftIntervals.push(driftInterval);
@@ -138,7 +137,7 @@ function handleKeyPress(event) {
                     score++;
                     document.getElementById('score').innerText = 'Score: ' + score;
                     const wordId = kanjiArray.find(k => k.kanji === kanji).id; // Get the word_id
-                    logReviewAttempt(wordId, true); // Log success with the correct word_id
+                    // logReviewAttempt(wordId, true); // Log success with the correct word_id # TODO
                 }
             } else {
                 // Reset the pointer if the character does not match

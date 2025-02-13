@@ -142,6 +142,15 @@ Possible Errors:
 - 404 Not Found: Group or study activity does not exist
 - 500 Internal Server Error: Database-related issues
 
+### GET /study_sessions
+- Get a list of study sessions
+
+Returns:
+- **id**: ID of the study session
+- **group_id**: ID of the group which was studied
+- **study_activity_id**: ID of the study activity used
+- **created_at**: When the session was created
+
 ### POST /study_sessions/{id}/review - Log a review attempt for a word during a study session
 - **id**: ID of the study session (required)
 - **word_id**: ID of the word reviewed (required)
@@ -156,6 +165,18 @@ Possible Errors:
 - 400 Bad Request: Missing required parameters
 - 404 Not Found: Study session does not exist
 - 500 Internal Server Error: Database-related issues
+
+
+### GET /study_sessions/{id}
+- Get the detail of reviews from a specific study session
+
+Returns:
+- **id**: ID of the study session
+- **group_id**: ID of the group which was studied
+- **study_activity_id**: ID of the study activity used
+- **created_at**: When the session was created
+- **correct_count**: count of correct = false reviews from the session
+- **incorrect_count**: count of correct = true reviews from the session
 
 
 # Design constraint
