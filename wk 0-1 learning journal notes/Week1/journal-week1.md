@@ -1,5 +1,7 @@
 ** Week 1 **
 
+see .pNG for screenshots through week
+
 # summary of tools used
 - IDE: Windsurf, looked at some front-end AI options but stuck with creating in Windsurf flow
 - Backend: python, FastAPI, uvicorn
