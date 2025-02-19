@@ -15,3 +15,6 @@ __pycache__/
 # IDE/editor specific files
 .idea/
 .vscode/
+
+# models cache
+/writing-practice/app/models/

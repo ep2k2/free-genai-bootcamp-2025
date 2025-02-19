@@ -11,7 +11,18 @@ Technical Requirements:
 - MangaOCR (Japanese) or for another language use Managed LLM that has Vision eg. GPT4o
 - Be able to upload an image
 
+## Technical spec
+
+### Launch from lang-portal
+- launch via new activity: "Practice handwriting words"
+-- store public exposed endpoint of running Lightning studio in Activities table
+
+
+
 ## Implementation approach
+
+Darya Petrashka
+https://github.com/dashapetr/kana--streamlit-app
 
 [] Rehost Darya's Streamlit app using Lightning AI
 [] sleep
