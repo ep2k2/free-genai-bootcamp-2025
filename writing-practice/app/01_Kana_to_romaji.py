@@ -7,24 +7,11 @@ from config import SELECT_KANA_DICT, CHECK_KANA_DICT
 app_dir = os.path.dirname(os.path.abspath(__file__))
 print("App directory:", app_dir)  # Debug info
 
-
-def change_character():
-    """Change the current character to a random one from the selected mode."""
-    st.session_state.character = random.choice(SELECT_KANA_DICT.get(st.session_state.mode))
-    return
-
-
-def change_mode(new_mode: str) -> None:
-    """Update the mode (Hiragana or Katakana) and change the character accordingly."""
-    st.session_state.mode = new_mode
-    st.session_state.character = random.choice(SELECT_KANA_DICT.get(st.session_state.mode))
-    return
-
-
+# Ensure that the correct image paths are set if any images are used
 # Page configuration
 st.set_page_config(
     page_title="Kana to romaji",
-    page_icon=":sa:")
+    page_icon=os.path.join(app_dir, ":sa:"))
 
 # Page title and description
 st.title("📝 Welcome to kana app!")
@@ -75,3 +62,16 @@ if st.session_state.mode is not None:
                 st.balloons()
             else:
                 st.error(f'No,   {st.session_state.character}   is NOT "{user_romaji_lower_case}"!', icon="🚨")
+
+
+def change_character():
+    """Change the current character to a random one from the selected mode."""
+    st.session_state.character = random.choice(SELECT_KANA_DICT.get(st.session_state.mode))
+    return
+
+
+def change_mode(new_mode: str) -> None:
+    """Update the mode (Hiragana or Katakana) and change the character accordingly."""
+    st.session_state.mode = new_mode
+    st.session_state.character = random.choice(SELECT_KANA_DICT.get(st.session_state.mode))
+    return

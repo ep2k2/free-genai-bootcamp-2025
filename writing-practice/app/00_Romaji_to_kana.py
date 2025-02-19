@@ -6,12 +6,13 @@ import os
 from streamlit_drawable_canvas import st_canvas
 from config import ALL_ROMAJI, CHECK_KANA_DICT
 
+# Get the absolute path to the app directory
+app_dir = os.path.dirname(os.path.abspath(__file__))
 
 def change_romaji() -> None:
     """Change the current romaji character."""
     st.session_state.romaji = random.choice(ALL_ROMAJI)
     return
-
 
 def change_mode(new_mode: str) -> None:
     """Change the practice mode (Hiragana/Katakana)."""
@@ -19,13 +20,13 @@ def change_mode(new_mode: str) -> None:
     st.session_state.romaji = random.choice(ALL_ROMAJI)
     return
 
-
-# Get the absolute path to the app directory
-app_dir = os.path.dirname(os.path.abspath(__file__))
-
 def recognize_character(mocr: MangaOcr) -> str:
     """Recognize the character drawn by the user using Manga OCR."""
-    character_file_path = os.path.join(app_dir, "result.png")
+    # Create a directory for temporary files if it doesn't exist
+    temp_dir = os.path.join(app_dir, 'temp')
+    os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
+    
+    character_file_path = os.path.join(temp_dir, "result.png")
     print("App directory:", app_dir)  # Debug info
     print("Character file path:", character_file_path)  # Debug info
     
@@ -35,7 +36,6 @@ def recognize_character(mocr: MangaOcr) -> str:
     img = Image.open(character_file_path)
     text = mocr(img)
     return text.strip()[0]
-
 
 # Streamlit page configuration
 st.set_page_config(
@@ -91,7 +91,11 @@ with st.form("kana_form", clear_on_submit=True):
         key="full_app",
     )
 
-    file_path = f"result.png"
+    # Create temp directory if it doesn't exist
+    temp_dir = os.path.join(app_dir, 'temp')
+    os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
+    
+    file_path = os.path.join(temp_dir, "result.png")
 
     # Form submission button
     submitted = st.form_submit_button("Submit")
