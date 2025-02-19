@@ -20,9 +20,15 @@ def change_mode(new_mode: str) -> None:
     return
 
 
+# Get the absolute path to the app directory
+app_dir = os.path.dirname(os.path.abspath(__file__))
+
 def recognize_character(mocr: MangaOcr) -> str:
     """Recognize the character drawn by the user using Manga OCR."""
-    character_file_path = os.path.join(os.getcwd(), "result.png")
+    character_file_path = os.path.join(app_dir, "result.png")
+    print("App directory:", app_dir)  # Debug info
+    print("Character file path:", character_file_path)  # Debug info
+    
     if not os.path.exists(character_file_path):
         raise FileNotFoundError(f"The file {character_file_path} does not exist.")
 
@@ -44,12 +50,13 @@ st.divider()
 if 'mode' not in st.session_state:
     st.session_state.mode = None
 
-if 'mocr' not in st.session_state:
-    # Use the preloaded model from the directory `/models/manga-ocr`
-    st.session_state.mocr = MangaOcr(pretrained_model_name_or_path="/models/manga-ocr")
-
-if "romaji" not in st.session_state:
+if 'romaji' not in st.session_state:
     st.session_state.romaji = random.choice(ALL_ROMAJI)
+
+if 'mocr' not in st.session_state:
+    model_path = os.path.join(app_dir, 'models', 'manga-ocr')
+    print("Model path:", model_path)  # Debug info
+    st.session_state.mocr = MangaOcr(pretrained_model_name_or_path=model_path)
 
 # Mode selection radio buttons
 new_mode = st.radio(

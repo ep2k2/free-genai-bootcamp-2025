@@ -1,4 +1,8 @@
 import streamlit as st
+import os
+
+# Get the absolute path to the app directory
+app_dir = os.path.dirname(os.path.abspath(__file__))
 
 st.set_page_config(
     page_title="Kana Learning App",
@@ -20,7 +24,9 @@ st.session_state.study_mode = st.radio(
 )
 
 # Display the Kana Chart
-image_path = f"img/{st.session_state.study_mode}.jpg"
+image_path = os.path.join(app_dir, "img", f"{st.session_state.study_mode}.jpg")
+print("App directory:", app_dir)  # Debug info
+print("Image path:", image_path)  # Debug info
 try:
     st.image(image_path,
              caption=f"{st.session_state.study_mode} Chart. "
@@ -34,9 +40,9 @@ except FileNotFoundError:
 st.divider()
 st.markdown(
     """
-    🎯 **Practice Makes Perfect!**  
-    👉 Visit the **Romaji to kana** and **Kana to romaji** pages to test your knowledge.  
-    🔁 Switch between *Hiragana* and *Katakana* modes to sharpen your skills.  
-    🌟 Keep practicing and track your progress regularly!
+    **Practice Makes Perfect!**  
+    **Visit the **Romaji to kana** and **Kana to romaji** pages to test your knowledge.**  
+    **Switch between *Hiragana* and *Katakana* modes to sharpen your skills.**  
+    **Keep practicing and track your progress regularly!**
     """,
 )

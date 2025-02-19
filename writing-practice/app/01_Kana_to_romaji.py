@@ -1,6 +1,11 @@
 import streamlit as st
 import random
+import os
 from config import SELECT_KANA_DICT, CHECK_KANA_DICT
+
+# Get the absolute path to the app directory
+app_dir = os.path.dirname(os.path.abspath(__file__))
+print("App directory:", app_dir)  # Debug info
 
 
 def change_character():
