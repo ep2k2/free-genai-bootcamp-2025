@@ -14,4 +14,4 @@ Technical Requirements:
 ## Implementation approach
 
 [] Rehost Darya's Streamlit app using Lightning AI
-[] 
+[] sleep
