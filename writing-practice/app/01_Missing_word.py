@@ -6,7 +6,7 @@ from mistralai import Mistral
 from dotenv import load_dotenv
 import json
 
-# Initialize Mistral AI
+# Initialize Mistral AI - local or cloud dev on Lightning AI
 load_dotenv()
 api_key = os.getenv("MISTRAL_API_KEY") # local
 if not api_key:
