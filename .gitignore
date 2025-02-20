@@ -1,6 +1,9 @@
 # Virtual environment
 venv/
 
+# Ignore environment variables
+.env
+
 # Compiled Python files
 *.pyc
 __pycache__/
@@ -16,5 +19,5 @@ __pycache__/
 .idea/
 .vscode/
 
-# models cache
+# models
 /writing-practice/app/models/
