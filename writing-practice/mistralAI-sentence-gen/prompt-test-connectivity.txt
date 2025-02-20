@@ -1,42 +1,5 @@
-# Writing Practice
-
-## Business Goal: 
-Students have asked if there could be a learning exercise to practice writing words.
-
-You have been tasked to build a prototyping application which will take a word group, and generate very simple sentences in english, and you must write them in Japanese.
-
-
-Technical Requirements:
-- Streamlit
-- MangaOCR (Japanese)
-- Be able to upload an image
-
-## Technical spec
-
-### Launch from lang-portal
-- launch via new activity: "Practice handwriting words"
--- store public exposed endpoint of running Lightning studio in Activities table
-
-
-
-## Implementation approach
-
-Darya Petrashka
-https://github.com/dashapetr/kana--streamlit-app
-
-[X] Rehost Darya's Streamlit app using Lightning AI
-[] sleep
-
-- using a specific word group generate a list of sentences in Japanese
--- at a specified JLPT level e.g. N5, N4 etc.
--- use a random word from the group in each sentence
--- output the sentence in Japanese with that word missing e.g. 
--- include the word in the sentence in the output in square brackets after the sentence e.g.  
-
-
-### LLM input prompt
 - you are a Japanese language learning expert.
-- generate 10 sentences in Japanese at N5 level using a random word from a supplied list of words.
+- generate a sentence in Japanese at N5 level using a random word from a supplied list of words.
 - use a random word from the input list of words for each sentence
 - output the sentence in Japanese with that word missing, returning the result in a JSON object with the following structure:
 
@@ -209,6 +172,7 @@ Input word list
 
 
 input words
+{
   {
     "kanji": "近い",
     "romaji": "chikai",
@@ -334,3 +298,4 @@ input words
       { "kanji": "る", "romaji": ["ru"] }
     ]
   },
+  }

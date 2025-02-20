@@ -1,0 +1,147 @@
+- you are a Japanese language learning expert.
+- generate a sentence in Japanese at N5 level using a random word from a supplied list of words.
+- use a random word from the input list of words for each sentence
+- output the sentence in Japanese with that word missing, returning the result in a JSON object with the following structure
+- double-check the json you return
+
+example output for reference.  always use this structure
+{
+    "question": {
+        "japanese": "今日の天気は___です。",
+        "english": "Today's weather is [cold]."
+    },
+    "answer": {
+        "kanji": "寒い",
+        "kana": "さむい",
+        "romaji": "samui"
+    }
+}
+
+input word list 
+{
+  {
+    "kanji": "近い",
+    "romaji": "chikai",
+    "english": "near; close",
+    "parts": [
+      { "kanji": "近", "romaji": ["chi","ka"] },
+      { "kanji": "い", "romaji": ["i"] }
+    ]
+  },
+  {
+    "kanji": "詰らない",
+    "romaji": "tsumaranai",
+    "english": "boring",
+    "parts": [
+      { "kanji": "詰", "romaji": ["tsu","ma"] },
+      { "kanji": "ら", "romaji": ["ra"] },
+      { "kanji": "な", "romaji": ["na"] },
+      { "kanji": "い", "romaji": ["i"] }
+    ]
+  },
+  {
+    "kanji": "遠い",
+    "romaji": "tooi",
+    "english": "far",
+    "parts": [
+      { "kanji": "遠", "romaji": ["to","o"] },
+      { "kanji": "い", "romaji": ["i"] }
+    ]
+  },
+  {
+    "kanji": "有名",
+    "romaji": "yuumei",
+    "english": "famous",
+    "parts": [
+      { "kanji": "有", "romaji": ["yu","u"] },
+      { "kanji": "名", "romaji": ["me","i"] }
+    ]
+  },
+  {
+    "kanji": "長い",
+    "romaji": "nagai",
+    "english": "long",
+    "parts": [
+      { "kanji": "長", "romaji": ["na","ga"] },
+      { "kanji": "い", "romaji": ["i"] }
+    ]
+  },
+ {
+    "kanji": "買い物する",
+    "romaji": "kaimonosuru",
+    "english": "to shop",
+    "parts": [
+      { "kanji": "買", "romaji": ["ka"] },
+      { "kanji": "い", "romaji": ["i"] },
+      { "kanji": "物", "romaji": ["mo", "no"] },
+      { "kanji": "す", "romaji": ["su"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  {
+    "kanji": "帰る",
+    "romaji": "kaeru",
+    "english": "to return",
+    "parts": [
+      { "kanji": "帰", "romaji": ["ka", "e"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  {
+    "kanji": "書く",
+    "romaji": "kaku",
+    "english": "to write",
+    "parts": [
+      { "kanji": "書", "romaji": ["ka"] },
+      { "kanji": "く", "romaji": ["ku"] }
+    ]
+  },
+  {
+    "kanji": "観光する",
+    "romaji": "kankousuru",
+    "english": "to sightsee",
+    "parts": [
+      { "kanji": "観", "romaji": ["kan"] },
+      { "kanji": "光", "romaji": ["kou"] },
+      { "kanji": "す", "romaji": ["su"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  {
+    "kanji": "聞く",
+    "romaji": "kiku",
+    "english": "to listen",
+    "parts": [
+      { "kanji": "聞", "romaji": ["ki"] },
+      { "kanji": "く", "romaji": ["ku"] }
+    ]
+  },
+  {
+    "kanji": "来る",
+    "romaji": "kuru",
+    "english": "to come",
+    "parts": [
+      { "kanji": "来", "romaji": ["ku"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  {
+    "kanji": "する",
+    "romaji": "suru",
+    "english": "to do",
+    "parts": [
+      { "kanji": "す", "romaji": ["su"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  {
+    "kanji": "食べる",
+    "romaji": "taberu",
+    "english": "to eat",
+    "parts": [
+      { "kanji": "食", "romaji": ["ta"] },
+      { "kanji": "べ", "romaji": ["be"] },
+      { "kanji": "る", "romaji": ["ru"] }
+    ]
+  },
+  }
