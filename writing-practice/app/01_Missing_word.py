@@ -1,144 +1,113 @@
 import streamlit as st
-import random
-from PIL import Image
-from manga_ocr import MangaOcr
 import os
+from manga_ocr import MangaOcr
 from streamlit_drawable_canvas import st_canvas
 from mistralai import Mistral
 from dotenv import load_dotenv
 import json
 
-# Load environment variables from .env file
+# Initialize Mistral AI
 load_dotenv()
-
-# Access the API key
 api_key = os.getenv("MISTRAL_API_KEY")
 if not api_key:
-    raise ValueError("MISTRAL_API_KEY not found in environment variables")
+    st.error("MISTRAL_API_KEY not found in environment variables")
+    st.stop()
 
-# Initialize Mistral client
-model = "mistral-large-latest"
 client = Mistral(api_key=api_key)
-
-def chat_with_mistral(message):
-    try:
-        chat_response = client.chat.complete(
-            model=model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": message,
-                }
-            ]
-        )
-        return chat_response.choices[0].message.content
-    except Exception as e:
-        print(f"Error occurred: {str(e)}")
-        return None
-
-# Get a new sentence from Mistral AI
-with open("/mnt/c/free-genai-bootcamp-2025/writing-practice/mistralAI-sentence-gen/prompt.txt", "r") as file:
-    user_message = file.read().strip()  # Read and strip any extra whitespace
-    print("\nAsking Mistral AI:", user_message)
-    response = chat_with_mistral(user_message)
-    print("\nMistral AI response:", response)
-
-# Parse the JSON response
-try:
-    parsed_response = json.loads(response)  # Assuming response is a JSON string
-    question_japanese = parsed_response['question']['japanese']
-    question_english = parsed_response['question']['english']
-    
-    # Display the questions
-    print("Japanese Question:", question_japanese)
-    print("English Question:", question_english)
-    
-except json.JSONDecodeError:
-    print("Failed to parse JSON response.")
-except KeyError as e:
-    print(f"Missing key in response: {e}")
+model = "mistral-large-latest"
 
 # Get the absolute path to the app directory
 app_dir = os.path.dirname(os.path.abspath(__file__))
 
-def recognize_character(mocr: MangaOcr) -> str:
-    """Recognize the character drawn by the user using Manga OCR."""
-    # Create a directory for temporary files if it doesn't exist
+def get_new_sentence():
+    """Get a new sentence from Mistral AI and update session state."""
+    try:
+        # Read prompt file
+        with open("/mnt/c/free-genai-bootcamp-2025/writing-practice/app/prompt.txt", "r") as file:
+            prompt = file.read().strip()
+        
+        # Get response from Mistral
+        response = client.chat.complete(
+            model=model,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        # Parse response
+        parsed = json.loads(response.choices[0].message.content)
+        st.session_state.current_sentence = parsed
+        
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
+
+def check_drawing(canvas_result):
+    """Check the drawn character using Manga OCR and compare with both kanji and kana answers."""
+    if canvas_result.image_data is None:
+        return
+        
+    # Save and process the drawing
     temp_dir = os.path.join(app_dir, 'temp')
-    os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
-    
+    os.makedirs(temp_dir, exist_ok=True)
     character_file_path = os.path.join(temp_dir, "result.png")
-    print("App directory:", app_dir)  # Debug info
-    print("Character file path:", character_file_path)  # Debug info
     
-    if not os.path.exists(character_file_path):
-        raise FileNotFoundError(f"The file {character_file_path} does not exist.")
+    with open(character_file_path, "wb") as fp:
+        fp.write(canvas_result.image_data)
+    
+    if os.path.exists(character_file_path):
+        try:
+            # Get OCR result
+            result = st.session_state.mocr(character_file_path)
+            st.write(f"Recognized text: {result}")
+            
+            # Get the correct answers from session state
+            correct_kanji = st.session_state.current_sentence['answer']['kanji']
+            correct_kana = st.session_state.current_sentence['answer']['kana']
+            
+            # Compare with both kanji and kana
+            if result == correct_kanji or result == correct_kana:
+                st.success(f"Correct! The answer matches {'kanji' if result == correct_kanji else 'kana'}")
+                st.balloons()
+            else:
+                st.error(f"Not quite. The correct answers are: Kanji: {correct_kanji}, Kana: {correct_kana}")
+                
+        except Exception as e:
+            st.error(f"Recognition error: {str(e)}")
 
-    img = Image.open(character_file_path)
-    text = mocr(img)
-    return text.strip()[0]
-
-# Streamlit page configuration
-st.set_page_config(
-        page_title="Missing word: 日本語練習",
-        page_icon=":sa:")
-
+# Page setup
+st.set_page_config(page_title="Missing word: 日本語練習", page_icon=":sa:")
 st.title("📝 Welcome to the missing words round!")
-st.subheader("Use this page to practice kanji writing!")
+st.subheader("Practice writing Japanese characters!")
 st.divider()
 
-# Initialize session state variables
-if 'mode' not in st.session_state:
-    st.session_state.mode = None
+# Initialize session state
+if 'current_sentence' not in st.session_state:
+    st.session_state.current_sentence = None
 
 if 'mocr' not in st.session_state:
-    # Initialize the MangaOcr with the correct model path
-    model_path = os.path.join(app_dir, 'models', 'manga-ocr')  # Ensure this path is correct
-    print("Model path:", model_path)  # Debug info
+    model_path = os.path.join(app_dir, 'models', 'manga-ocr')
     st.session_state.mocr = MangaOcr(pretrained_model_name_or_path=model_path)
 
-# Display the current romaji character
-st.subheader(st.session_state.romaji)
+# Main app interface
+if st.button("Get New Sentence"):
+    get_new_sentence()
 
-# Button to load a new romaji character
-st.button("New sentence?", on_click=change_romaji)
-
-# Instructions for the user
-st.write(f"Please write the missing word in the window below {st.session_state.mode} for {st.session_state.romaji}:")
-
-# Drawing canvas for Kana input
-with st.form("kana_form", clear_on_submit=True):
-    canvas_result = st_canvas(
-        fill_color="rgba(255, 165, 0)",
-        stroke_width=6,
-        stroke_color="#000000",
-        background_color="#FFFFFF",
-        background_image=None,
-        height=300,
-        point_display_radius=0,
-        key="full_app",
-    )
-
-    # Create temp directory if it doesn't exist
-    temp_dir = os.path.join(app_dir, 'temp')
-    os.makedirs(temp_dir, exist_ok=True)  # Ensure the directory exists
+if st.session_state.current_sentence:
+    # Display the sentence
+    st.write("Japanese:", st.session_state.current_sentence['question']['japanese'])
+    st.write("English:", st.session_state.current_sentence['question']['english'])
     
-    file_path = os.path.join(temp_dir, "result.png")
-
-    # Form submission button
-    submitted = st.form_submit_button("Submit")
-    if submitted:
-        # Save the user's drawing as an image
-        img_data = canvas_result.image_data
-        im = Image.fromarray(img_data.astype("uint8"), mode="RGBA")
-        im.save(file_path, "PNG")
-
-        # Use OCR to recognize the character
-        user_result = recognize_character(st.session_state.mocr)
-
-        # Validate the user's input against the correct Kana
-        if CHECK_KANA_DICT.get(st.session_state.mode).get(st.session_state.romaji) == user_result:
-            st.success(f'Yes,   {st.session_state.romaji}   is "{user_result}"!', icon="✅")
-            st.balloons()
-        else:
-            st.error(f'No,   {st.session_state.romaji}   is NOT "{user_result}"!', icon="🚨")
+    # Drawing canvas
+    with st.form("kanji_form", clear_on_submit=True):
+        canvas_result = st_canvas(
+            stroke_width=10,
+            stroke_color="black",
+            background_color="white",
+            height=300,
+            width=750,
+            drawing_mode="freedraw",
+            key="canvas"
+        )
+        
+        if st.form_submit_button("Check Character"):
+            check_drawing(canvas_result)
+else:
+    st.info("Click 'Get New Sentence' to start!")
