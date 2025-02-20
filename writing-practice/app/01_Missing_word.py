@@ -25,7 +25,7 @@ def get_new_sentence():
     """Get a new sentence from Mistral AI and update session state."""
     try:
         # Read prompt file
-        with open("/mnt/c/free-genai-bootcamp-2025/writing-practice/app/prompt.txt", "r") as file:
+        with open(os.path.join(app_dir, "prompt.txt"), "r") as file:
             prompt = file.read().strip()
         
         # Get response from Mistral
