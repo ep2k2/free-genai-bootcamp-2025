@@ -54,7 +54,8 @@ if 'romaji' not in st.session_state:
     st.session_state.romaji = random.choice(ALL_ROMAJI)
 
 if 'mocr' not in st.session_state:
-    model_path = os.path.join(app_dir, 'models', 'manga-ocr')
+    # Initialize the MangaOcr with the correct model path
+    model_path = os.path.join(app_dir, 'models', 'manga-ocr')  # Ensure this path is correct
     print("Model path:", model_path)  # Debug info
     st.session_state.mocr = MangaOcr(pretrained_model_name_or_path=model_path)
 
