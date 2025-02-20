@@ -8,7 +8,9 @@ import json
 
 # Initialize Mistral AI
 load_dotenv()
-api_key = os.getenv("MISTRAL_API_KEY")
+api_key = os.getenv("MISTRAL_API_KEY") # local
+if not api_key:
+    api_key = os.environ.get("MISTRAL_API_KEY") # Lightning AI
 if not api_key:
     st.error("MISTRAL_API_KEY not found in environment variables")
     st.stop()
