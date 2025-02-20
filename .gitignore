@@ -14,6 +14,7 @@ __pycache__/
 # Temporary files
 *.tmp
 *.temp
+/writing-practice/app/temp
 
 # IDE/editor specific files
 .idea/
