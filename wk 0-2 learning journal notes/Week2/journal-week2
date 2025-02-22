@@ -23,12 +23,40 @@ Experiment to see if could reimplement Darya's code in Lightning AI as platform
     }
 }
 
+# Language Listening App
+Experiment to see if low-code style approach might ease PoC-type experimentation and decided to explore n8n as a 'wrapper' extending langchain.
+- initial plan was to self-host but too 'low power; locally and setup on Lightning AI not smooth so decided to use that for writing app below instead
+- using n8n cloud setup flow to call MistralAI with precanned prompt fed in from another node... but Youtube transcript API only seems to support scoped OAuth officially so seems like the many Python impl are scraping using undoc feature? 
+- not a super experience with n8n: built-in nodes don't seem current e.g. AI model endpoint setup with credentials and/or limited needing workarounds to even feed in text as expecting to orchestrate other hosted services p.s. for simple text JSON can be a pig to work with...! 
+
+# Kana Practice App
+Experiment to see if could reimplement Darya's code in Lightning AI as platform
+- to see what a mixed local/cloud environment experience would be like: this didn't go smoothly and needed a number of changes to work (os/filename portability issues etc.) - likely due to how i set up but found the 'loop' using cursor and pushing changes slow and cumbersome and ended up with an uneasy mix of local and cloud :(
+- once working added a new page for a 'missing words round'-type quiz format
+-- iterated on and used MistralAI to generate N5 level question with decent success
+-- did not complete (recognition of full text, integration with front-end to input specified word list into prompt or to return quiz results)
+
+{
+    "question": {
+        "japanese": "今日の天気は___です。",
+        "english": "Today's weather is [cold]."
+    },
+    "answer": {
+        "kanji": "寒い",
+        "kana": "さむい",
+        "romaji": "samui"
+    }
+}
+
 
 # ASL Finger Spelling (Optional)
 Found this real-world example really interesting so thankyou to everyone involved.  Inspired me to do some more research and this recent announcement worth flagging - https://blogs.nvidia.com/blog/ai-sign-language/ - especially in view of the challenges mentioned in gathering good source training data.
 
 # Learning
 a) wanted to keep going with trying as many different platforms, tools and approaches as possible... but AI tool paralysis is real and everthing is moving so fast (Railway, Lightning, n8n, local, various AI models this week)
+<<<<<<< HEAD
 a) wanted to keep going with trying as many different platforms, tools and approaches as possible... but AI tool paralysis is real and everthing is moving so fast (Railway, Lightning, n8n, local, various AI models this week)
+=======
+>>>>>>> cb768556b9d36156537126f3e1adb07de3daefd0
 b) had a lot of challenges in using/configuring various things - my experience cloud-side is that things very often don't glue-together seamlessly and when they don't you have less control and insight into why that is vs an environment you control
 c) also looked to catch up with videos this week and progress with GenAI essentials (first sight of bootcamp the night before it started...!)
