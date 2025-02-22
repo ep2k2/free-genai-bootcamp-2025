@@ -1,0 +1,149 @@
+Mistral AI response: ```json
+{
+  "questions": [
+    {
+      "question": {
+        "japanese": "この場所は___です。",
+        "english": "This place is [near; close]."
+      },
+      "answer": {
+        "kanji": "近い",
+        "kana": "ちかい",
+        "romaji": "chikai"
+      }
+    },
+    {
+      "question": {
+        "japanese": "この映画は___です。",
+        "english": "This movie is [boring]."
+      },
+      "answer": {
+        "kanji": "詰らない",
+        "kana": "つまらない",
+        "romaji": "tsumaranai"
+      }
+    },
+    {
+      "question": {
+        "japanese": "あの山は___です。",
+        "english": "That mountain is [far]."
+      },
+      "answer": {
+        "kanji": "遠い",
+        "kana": "とおい",
+        "romaji": "tooi"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼は___人です。",
+        "english": "He is a [famous] person."
+      },
+      "answer": {
+        "kanji": "有名",
+        "kana": "ゆうめい",
+        "romaji": "yuumei"
+      }
+    },
+    {
+      "question": {
+        "japanese": "この道は___です。",
+        "english": "This road is [long]."
+      },
+      "answer": {
+        "kanji": "長い",
+        "kana": "ながい",
+        "romaji": "nagai"
+      }
+    },
+    {
+      "question": {
+        "japanese": "今日は___します。",
+        "english": "Today, I will [to shop]."
+      },
+      "answer": {
+        "kanji": "買い物する",
+        "kana": "かいものする",
+        "romaji": "kaimonosuru"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼はもう家に___ます。",
+        "english": "He will [to return] home now."
+      },
+      "answer": {
+        "kanji": "帰る",
+        "kana": "かえる",
+        "romaji": "kaeru"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼女は手紙を___ます。",
+        "english": "She will [to write] a letter."
+      },
+      "answer": {
+        "kanji": "書く",
+        "kana": "かく",
+        "romaji": "kaku"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼らは___します。",
+        "english": "They will [to sightsee]."
+      },
+      "answer": {
+        "kanji": "観光する",
+        "kana": "かんこうする",
+        "romaji": "kankousuru"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼は音楽を___ます。",
+        "english": "He will [to listen] to music."
+      },
+      "answer": {
+        "kanji": "聞く",
+        "kana": "きく",
+        "romaji": "kiku"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼女はもう___ます。",
+        "english": "She will [to come] soon."
+      },
+      "answer": {
+        "kanji": "来る",
+        "kana": "くる",
+        "romaji": "kuru"
+      }
+    },
+    {
+      "question": {
+        "japanese": "私は宿題を___ます。",
+        "english": "I will [to do] my homework."
+      },
+      "answer": {
+        "kanji": "する",
+        "kana": "する",
+        "romaji": "suru"
+      }
+    },
+    {
+      "question": {
+        "japanese": "彼は昼ご飯を___ます。",
+        "english": "He will [to eat] lunch."
+      },
+      "answer": {
+        "kanji": "食べる",
+        "kana": "たべる",
+        "romaji": "taberu"
+      }
+    }
+  ]
+}
+```
