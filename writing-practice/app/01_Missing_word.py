@@ -33,6 +33,8 @@ def get_new_sentence():
             model=model,
             messages=[{"role": "user", "content": prompt}]
         )
+
+        print("API Response:", response.text)
         
         # Parse response
         parsed = json.loads(response.choices[0].message.content)
