@@ -42,17 +42,17 @@ Given a song title find, parse and return a json structured list of japanese voc
 - [x] Clone octotools repository
 - [x] Create and activate virtual environment using uv
 - [x] Create new engine definition for Gemini based on the OpenAI engine def
-- [ ] Create .env file with GEMINI_API_KEY
-- [ ] Verify .gitignore includes .env
-- [ ] Test Gemini API connectivity manually
-- [ ] Create new python_code_generator_gemini entry in based on OpenAI version 
-- [ ] Test basic octotools installation using python_code_generator tool.py
-- [ ] Make sure Gemini API is configured to be constrained to return JSON output
-      https://ai.google.dev/gemini-api/docs/structured-output?lang=python
+- [x] Create .env file with GEMINI_API_KEY
+- [x] Verify .gitignore includes .env
+- [x] Test Gemini API connectivity manually
+- [x] Create new python_code_generator_gemini entry in based on OpenAI version 
+- [x] Test basic octotools installation using python_code_generator_gemini/tool.py
 
 ## Development Phase 1 - Core Implementation
 - [ ] Create new 'card' tool in octotools/tools directory
   - [ ] Define tool structure and interface
+  - [ ] Make sure Gemini API is configured to be constrained to return JSON output
+      https://ai.google.dev/gemini-api/docs/structured-output?lang=python
   - [ ] Implement basic function calling
   - [ ] Add Japanese text parsing capability
 - [ ] Configure tool in tasks/solve.py
