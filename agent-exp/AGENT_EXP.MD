@@ -36,3 +36,62 @@ Given a song title find, parse and return a json structured list of japanese voc
 -- consider JsonSchema
 
 # Plan tracking
+
+## Setup Phase
+- [x] Install uv package manager
+- [x] Clone octotools repository
+- [x] Create and activate virtual environment using uv
+- [x] Create new engine definition for Gemini based on the OpenAI engine def
+- [ ] Create .env file with GEMINI_API_KEY
+- [ ] Verify .gitignore includes .env
+- [ ] Test Gemini API connectivity manually
+- [ ] Create new python_code_generator_gemini entry in based on OpenAI version 
+- [ ] Test basic octotools installation using python_code_generator tool.py
+- [ ] Make sure Gemini API is configured to be constrained to return JSON output
+      https://ai.google.dev/gemini-api/docs/structured-output?lang=python
+
+## Development Phase 1 - Core Implementation
+- [ ] Create new 'card' tool in octotools/tools directory
+  - [ ] Define tool structure and interface
+  - [ ] Implement basic function calling
+  - [ ] Add Japanese text parsing capability
+- [ ] Configure tool in tasks/solve.py
+- [ ] Test basic tool functionality
+  - [ ] Test with simple song title
+  - [ ] Verify JSON output structure
+
+## Development Phase 2 - Japanese Processing
+- [ ] Integrate yomi API for Japanese tokenization
+  - [ ] Test API connectivity
+  - [ ] Implement tokenization logic
+  - [ ] Handle error cases
+- [ ] Add JLPT level detection
+- [ ] Test Japanese processing
+  - [ ] Test with various song titles
+  - [ ] Verify tokenization accuracy
+  - [ ] Check JLPT level accuracy
+
+## Development Phase 3 - Output Validation
+- [ ] Evaluate need for JSON schema validation
+- [ ] If needed:
+  - [ ] Define JSON schema for vocabulary output
+  - [ ] Implement schema validation
+  - [ ] Add error handling for invalid outputs
+- [ ] Test output format
+  - [ ] Verify consistent JSON structure
+  - [ ] Check error handling
+  - [ ] Validate against edge cases
+
+## Final Testing Phase
+- [ ] End-to-end testing
+  - [ ] Test with various song types
+  - [ ] Verify error handling
+  - [ ] Check performance
+- [ ] Documentation
+  - [ ] Update README
+  - [ ] Add usage examples
+  - [ ] Document API endpoints
+
+## Optional Extensions
+- [ ] consider implementing local tokenization using janome
+- [ ] Add web scraping capability if needed
