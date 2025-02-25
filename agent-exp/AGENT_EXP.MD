@@ -13,7 +13,7 @@ Given a song title find, parse and return a json structured list of japanese voc
 - how strong the 'reasoning' of the target LLM model needs to be in order to make effective function-calling tool use
 - how easy to extend
 -- octotools with a new custom tool 'card' is in practice (in this case a non-LLM tool)
--- as Japanese tokeniser (including morphological analysis) web API using yomi https://ookii-tsuki.github.io/yomi/
+-- as Japanese tokeniser (including morphological analysis) web API using yomi https://github.com/ookii-tsuki/yomi https://ookii-tsuki.github.io/yomi/
 --- a possible alternative might be local code using e.g. https://github.com/mocobeta/janome;
 - whether an additional tool to check and enforce a JSON schema is necessary to consistently return valid and consistent JSON (scenario is creation of a dictionary form vocabulary list from the song)
 
@@ -49,12 +49,12 @@ Given a song title find, parse and return a json structured list of japanese voc
 - [x] Test basic octotools installation using python_code_generator_gemini/tool.py
 
 ## Development Phase 1 - Core Implementation
-- [ ] Create new 'card' tool in octotools/tools directory
-  - [ ] Define tool structure and interface
-  - [ ] Make sure Gemini API is configured to be constrained to return JSON output
+- [x] Create new 'card' tool in octotools/tools directory
+  - [x] Define tool structure and interface
+  - [x] Make sure Gemini API is configured to be constrained to return JSON output
       https://ai.google.dev/gemini-api/docs/structured-output?lang=python
   - [ ] Implement basic function calling
-  - [ ] Add Japanese text parsing capability
+  - [x] Add Japanese text parsing capability
 - [ ] Configure tool in tasks/solve.py
 - [ ] Test basic tool functionality
   - [ ] Test with simple song title
