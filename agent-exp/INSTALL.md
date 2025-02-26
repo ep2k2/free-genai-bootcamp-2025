@@ -98,9 +98,9 @@ If successful, you should see the tool's output without any errors.
 
 3. **Missing System Dependencies**
    - Symptom: "command not found" errors
-   - Solution: Install parallel using uv:
+   - Solution: Install required system packages:
      ```bash
-     uv pip install parallel-python
+     sudo apt-get install parallel
      ```
 
 4. **Missing Directories**
