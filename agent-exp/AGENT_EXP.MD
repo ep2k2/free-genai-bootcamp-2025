@@ -5,6 +5,7 @@ Given a song title find, parse and return a json structured list of japanese voc
 # Target Technical spec
 - Python: write simple pythonic code
 - LLM: use Gemini 2.0 Flash
+- Japanese: use yomi for tokenization
 - use uv as package manager
 - use uv for virtual environments
 
@@ -61,9 +62,9 @@ Given a song title find, parse and return a json structured list of japanese voc
   - [ ] Verify JSON output structure
 
 ## Development Phase 2 - Japanese Processing
-- [ ] Integrate yomi API for Japanese tokenization
-  - [ ] Test API connectivity
-  - [ ] Implement tokenization logic
+- [x] Integrate yomi API for Japanese tokenization
+  - [x] Test API connectivity
+  - [x] Implement tokenization logic
   - [ ] Handle error cases
 - [ ] Add JLPT level detection
 - [ ] Test Japanese processing

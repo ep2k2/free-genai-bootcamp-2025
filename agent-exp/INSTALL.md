@@ -16,6 +16,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Verify installation
 uv --version
+
+# Install system tools via uv
+uv pip install parallel-python
 ```
 
 ### 2. Clone Repository
@@ -91,6 +94,20 @@ If successful, you should see the tool's output without any errors.
      └── octotools/
          └── tools/
              └── python_code_generator/
+     ```
+
+3. **Missing System Dependencies**
+   - Symptom: "command not found" errors
+   - Solution: Install parallel using uv:
+     ```bash
+     uv pip install parallel-python
+     ```
+
+4. **Missing Directories**
+   - Symptom: "No such file or directory" for results/logs
+   - Solution: Create required directories:
+     ```bash
+     mkdir -p results/octotools
      ```
 
 ## Next Steps
